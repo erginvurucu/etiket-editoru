@@ -1,0 +1,3120 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Koli Etiketi Sistemi (Gıda Mevzuatı)</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+<style>
+:root {
+  --green: #16a34a;
+  --green-dark: #15803d;
+  --green-light: #dcfce7;
+  --green-xlight: #f0fdf4;
+  --blue: #1d4ed8;
+  --blue-light: #dbeafe;
+  --red: #dc2626;
+  --red-light: #fee2e2;
+  --orange: #ea580c;
+  --orange-light: #fff7ed;
+  --gray-50: #f9fafb;
+  --gray-100: #f3f4f6;
+  --gray-200: #e5e7eb;
+  --gray-300: #d1d5db;
+  --gray-400: #9ca3af;
+  --gray-500: #6b7280;
+  --gray-600: #4b5563;
+  --gray-700: #374151;
+  --gray-800: #1f2937;
+  --gray-900: #111827;
+  --shadow: 0 4px 24px rgba(0,0,0,0.10);
+  --shadow-lg: 0 8px 40px rgba(0,0,0,0.14);
+  --radius: 16px;
+  --radius-sm: 10px;
+}
+ 
+* { box-sizing: border-box; margin: 0; padding: 0; }
+ 
+body {
+  font-family: 'Nunito', sans-serif;
+  background: var(--gray-50);
+  color: var(--gray-800);
+  min-height: 100vh;
+  font-size: 17px;
+  line-height: 1.6;
+}
+ 
+/* ── HEADER ── */
+.site-header {
+  background: white;
+  border-bottom: 3px solid var(--green);
+  padding: 18px 32px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  box-shadow: var(--shadow);
+}
+.header-logo {
+  width: 52px; height: 52px;
+  background: linear-gradient(135deg, var(--green), var(--green-dark));
+  border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(22,163,74,0.35);
+}
+.header-title { font-size: 24px; font-weight: 900; color: var(--gray-900); line-height: 1.1; }
+.header-sub { font-size: 14px; color: var(--green); font-weight: 700; }
+.header-btns { margin-left: auto; display: flex; gap: 10px; }
+ 
+/* ── LAYOUT ── */
+.main-layout {
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  gap: 24px;
+  padding: 28px 32px;
+}
+@media (max-width: 900px) {
+  .main-layout { grid-template-columns: 1fr; padding: 16px; }
+  .site-header { padding: 14px 20px; }
+}
+ 
+/* ── PANELS ── */
+.panel {
+  background: white;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.panel-header {
+  background: var(--green);
+  color: white;
+  padding: 16px 22px;
+  font-size: 18px;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.panel-body { padding: 22px; }
+ 
+/* ── STEP NAV ── */
+.step-nav {
+  display: flex;
+  border-bottom: 2px solid var(--gray-200);
+  background: white;
+  overflow-x: auto;
+  border-radius: 0;
+}
+.step-btn {
+  flex: 1;
+  padding: 16px 8px 14px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-family: 'Nunito', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--gray-500);
+  border-bottom: 3px solid transparent;
+  transition: all 0.2s;
+  min-width: 90px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.step-btn.active {
+  color: var(--green);
+  border-bottom-color: var(--green);
+  background: var(--green-xlight);
+}
+.step-btn:hover:not(.active) { background: var(--gray-50); color: var(--gray-700); }
+.step-icon { font-size: 24px; line-height: 1; }
+.step-num {
+  width: 24px; height: 24px;
+  background: var(--gray-200);
+  border-radius: 50%;
+  font-size: 12px;
+  font-weight: 900;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--gray-600);
+}
+.step-btn.active .step-num { background: var(--green); color: white; }
+.step-btn.done .step-num { background: var(--green-dark); color: white; }
+ 
+/* ── FORM CONTROLS ── */
+.form-group { margin-bottom: 18px; }
+.form-label {
+  display: block;
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--gray-700);
+  margin-bottom: 8px;
+}
+.form-input {
+  width: 100%;
+  padding: 14px 16px;
+  font-size: 17px;
+  font-family: 'Nunito', sans-serif;
+  border: 2.5px solid var(--gray-300);
+  border-radius: var(--radius-sm);
+  background: white;
+  color: var(--gray-900);
+  transition: border 0.15s;
+  outline: none;
+}
+.form-input:focus { border-color: var(--green); box-shadow: 0 0 0 4px rgba(22,163,74,0.12); }
+.form-hint { font-size: 13px; color: var(--gray-500); margin-top: 5px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+@media (max-width: 500px) { .form-row { grid-template-columns: 1fr; } }
+ 
+/* ── BUTTONS ── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 24px;
+  font-size: 17px;
+  font-weight: 800;
+  font-family: 'Nunito', sans-serif;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.15s;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0,0,0,0.15); }
+.btn:active { transform: translateY(0); }
+.btn-green { background: var(--green); color: white; }
+.btn-green:hover { background: var(--green-dark); }
+.btn-blue { background: var(--blue); color: white; }
+.btn-gray { background: var(--gray-200); color: var(--gray-700); }
+.btn-gray:hover { background: var(--gray-300); }
+.btn-red { background: var(--red); color: white; }
+.btn-outline { background: white; color: var(--green); border: 2.5px solid var(--green); }
+.btn-sm { padding: 9px 16px; font-size: 15px; }
+.btn-lg { padding: 18px 36px; font-size: 20px; }
+.btn-full { width: 100%; }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+ 
+/* ── PRESETS ── */
+.preset-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.preset-card {
+  border: 3px solid var(--gray-200);
+  border-radius: var(--radius-sm);
+  padding: 16px 14px;
+  cursor: pointer;
+  transition: all 0.15s;
+  background: white;
+  text-align: left;
+}
+.preset-card:hover { border-color: var(--green); background: var(--green-xlight); }
+.preset-card.selected { border-color: var(--green); background: var(--green-xlight); }
+.preset-card .preset-name { font-size: 16px; font-weight: 900; color: var(--gray-800); }
+.preset-card .preset-size { font-size: 13px; color: var(--gray-500); margin-top: 3px; }
+.preset-card .preset-icon { font-size: 28px; margin-bottom: 6px; }
+ 
+/* ── PRODUCT LIST ── */
+.product-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+.product-item {
+  border: 2.5px solid var(--gray-200);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: all 0.15s;
+  background: white;
+}
+.product-item:hover { border-color: var(--green); background: var(--green-xlight); }
+.product-item.selected { border-color: var(--green); background: var(--green-xlight); }
+.product-num {
+  width: 36px; height: 36px;
+  background: var(--gray-200);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 900; font-size: 16px;
+  flex-shrink: 0;
+  color: var(--gray-600);
+}
+.product-item.selected .product-num { background: var(--green); color: white; }
+.product-info { flex: 1; min-width: 0; }
+.product-name { font-weight: 800; font-size: 15px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.product-price { font-size: 13px; color: var(--gray-500); margin-top: 2px; }
+ 
+/* ── PRODUCT NAV ── */
+.product-nav {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--green-xlight);
+  border: 2px solid var(--green-light);
+  border-radius: var(--radius-sm);
+  padding: 12px 16px;
+  margin-bottom: 16px;
+}
+.nav-arrow {
+  width: 44px; height: 44px;
+  background: white;
+  border: 2.5px solid var(--green);
+  border-radius: 10px;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.15s;
+  color: var(--green);
+  font-weight: 900;
+}
+.nav-arrow:hover:not(:disabled) { background: var(--green); color: white; }
+.nav-arrow:disabled { border-color: var(--gray-300); color: var(--gray-300); cursor: not-allowed; }
+.nav-info { flex: 1; text-align: center; }
+.nav-count { font-size: 14px; font-weight: 700; color: var(--green-dark); }
+.nav-name { font-size: 15px; font-weight: 800; color: var(--gray-800); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+ 
+/* ── DROP ZONE ── */
+.drop-zone {
+  border: 3px dashed var(--gray-300);
+  border-radius: var(--radius-sm);
+  padding: 28px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: white;
+  margin-bottom: 14px;
+}
+.drop-zone:hover, .drop-zone.drag-over { border-color: var(--green); background: var(--green-xlight); }
+.drop-zone-icon { font-size: 42px; margin-bottom: 8px; }
+.drop-zone-title { font-size: 18px; font-weight: 800; color: var(--green); margin-bottom: 4px; }
+.drop-zone-sub { font-size: 14px; color: var(--gray-500); }
+ 
+/* ── LABEL PREVIEW ── */
+.preview-area {
+  background: #ddd;
+  border-radius: var(--radius);
+  padding: 14px 28px 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  min-height: 220px;
+  position: relative;
+  overflow: auto;
+}
+.preview-wrapper { position: relative; }
+.label-paper {
+  background: white;
+  border: 2px solid #555;
+  position: relative;
+  overflow: hidden;
+  font-family: Arial, Helvetica, sans-serif;
+  color: #000;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.2);
+  flex-shrink: 0;
+}
+
+/* ── FLOATING EDIT TOOLBAR ── */
+@keyframes ftSlide { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }
+.ft-label { font-size:12px;font-weight:900;color:#1d4ed8; margin-bottom:8px;display:flex;align-items:center;justify-content:space-between; }
+.ft-row { display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:4px; }
+.ft-sep { width:1px;height:24px;background:#e2e8f0;flex-shrink:0; }
+.label-elem {
+  position: absolute;
+  overflow: hidden;
+  cursor: grab;
+  transition: outline 0.1s;
+  display: flex;
+  align-items: center;
+}
+.label-elem:hover { outline: 1px dashed rgba(29,78,216,0.4); }
+.label-elem.selected { outline: 2px solid #2563eb !important; z-index: 10; cursor: grabbing; overflow: visible; }
+.label-elem.editing-inline { cursor: text; overflow: visible; }
+@keyframes qeSlide { from { opacity:0; transform:translateY(-10px); } to { opacity:1; transform:translateY(0); } }
+.margin-guide {
+  position: absolute;
+  pointer-events: none;
+  z-index: 50;
+  border: 1px dashed rgba(29,78,216,0.25);
+}
+ 
+/* ── INLINE EDIT ── */
+.inline-edit-input {
+  width: 100%; height: 100%;
+  font-family: Arial, Helvetica, sans-serif;
+  border: 2px solid #2563eb;
+  outline: none;
+  padding: 2px 4px;
+  background: rgba(219,234,254,0.9);
+  color: #000;
+  resize: none;
+}
+ 
+/* ── FONT EDITOR ── */
+.font-row {
+  background: var(--gray-50);
+  border: 2px solid var(--gray-200);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  transition: border-color 0.15s;
+}
+.font-row:hover { border-color: var(--green-light); }
+.font-row-title {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--gray-800);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+.font-row-title input {
+  border: 1.5px solid var(--gray-300);
+  border-radius: 6px;
+  padding: 3px 8px;
+  font-size: 14px;
+  font-family: 'Nunito', sans-serif;
+  color: var(--gray-800);
+  background: white;
+  outline: none;
+  width: 200px;
+}
+.font-row-title input:focus { border-color: var(--green); }
+.font-controls { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.font-size-ctrl { display: flex; align-items: center; gap: 6px; }
+.size-btn {
+  width: 36px; height: 36px;
+  background: white;
+  border: 2px solid var(--gray-300);
+  border-radius: 8px;
+  font-size: 20px;
+  font-weight: 900;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--gray-700);
+  transition: all 0.12s;
+}
+.size-btn:hover { border-color: var(--green); color: var(--green); background: var(--green-xlight); }
+.size-val {
+  min-width: 52px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 900;
+  color: var(--green-dark);
+  background: var(--green-xlight);
+  border: 2px solid var(--green-light);
+  border-radius: 8px;
+  padding: 4px 0;
+}
+.align-btns { display: flex; gap: 4px; }
+.align-btn {
+  width: 36px; height: 36px;
+  border: 2px solid var(--gray-300);
+  border-radius: 7px;
+  background: white;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.12s;
+}
+.align-btn.active { border-color: var(--blue); background: var(--blue-light); color: var(--blue); }
+.align-btn:hover:not(.active) { border-color: var(--gray-400); }
+.font-preview {
+  margin-top: 10px;
+  background: white;
+  border: 1px solid var(--gray-200);
+  border-radius: 6px;
+  padding: 6px 12px;
+  overflow: hidden;
+  text-align: left;
+  font-family: Arial, Helvetica, sans-serif;
+  color: #000;
+}
+.prefix-edit {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.prefix-label { font-size: 13px; color: var(--gray-500); font-weight: 700; white-space: nowrap; }
+.prefix-input {
+  flex: 1;
+  padding: 6px 10px;
+  font-size: 13px;
+  font-family: 'Nunito', sans-serif;
+  border: 1.5px solid var(--gray-300);
+  border-radius: 6px;
+  outline: none;
+  background: white;
+}
+.prefix-input:focus { border-color: var(--green); }
+ 
+/* ── QR FIELDS ── */
+.qr-field {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: var(--gray-50);
+  border: 2px solid var(--gray-200);
+  border-radius: var(--radius-sm);
+  margin-bottom: 8px;
+}
+.toggle-wrap { flex-shrink: 0; }
+.toggle {
+  width: 52px; height: 28px;
+  background: var(--gray-300);
+  border-radius: 14px;
+  cursor: pointer;
+  position: relative;
+  transition: background 0.2s;
+  border: none;
+  outline: none;
+}
+.toggle.on { background: var(--green); }
+.toggle-knob {
+  position: absolute;
+  top: 3px; left: 3px;
+  width: 22px; height: 22px;
+  background: white;
+  border-radius: 50%;
+  transition: left 0.2s;
+  pointer-events: none;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+}
+.toggle.on .toggle-knob { left: 27px; }
+.qr-field-info { flex: 1; }
+.qr-field-name { font-size: 16px; font-weight: 800; color: var(--gray-700); }
+.qr-field-val { font-size: 13px; color: var(--green-dark); font-family: monospace; margin-top: 2px; }
+.qr-preview-box {
+  background: var(--gray-900);
+  color: #4ade80;
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  font-family: monospace;
+  font-size: 15px;
+  word-break: break-all;
+  line-height: 1.8;
+  margin-bottom: 16px;
+}
+ 
+/* ── ZOOM CONTROLS ── */
+.zoom-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: white;
+  border: 2px solid var(--gray-200);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  margin-bottom: 16px;
+}
+.zoom-label { font-size: 15px; font-weight: 700; color: var(--gray-600); }
+.zoom-val { min-width: 54px; text-align: center; font-size: 17px; font-weight: 900; color: var(--green-dark); }
+ 
+/* ── CARDS ── */
+.info-card {
+  background: var(--blue-light);
+  border: 2px solid #93c5fd;
+  border-radius: var(--radius-sm);
+  padding: 14px 18px;
+  font-size: 15px;
+  color: #1e40af;
+  font-weight: 600;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.info-icon { font-size: 22px; flex-shrink: 0; margin-top: 1px; }
+.success-toast {
+  position: fixed;
+  top: 90px; right: 24px;
+  background: var(--green);
+  color: white;
+  padding: 14px 22px;
+  border-radius: var(--radius-sm);
+  font-size: 17px;
+  font-weight: 800;
+  z-index: 999;
+  box-shadow: var(--shadow-lg);
+  display: flex; align-items: center; gap: 10px;
+  animation: slideIn 0.3s ease;
+}
+@keyframes slideIn { from { transform: translateX(120%); } to { transform: translateX(0); } }
+ 
+/* ── SECTION TITLE ── */
+.section-title {
+  font-size: 20px;
+  font-weight: 900;
+  color: var(--gray-900);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.section-title .icon { font-size: 24px; }
+ 
+/* ── MARGINS ── */
+.margin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+ 
+/* ── PRINT AREA ── */
+#print-area { display: none; }
+@media print {
+  body > *:not(#print-area) { display: none !important; }
+  #print-area { display: block !important; }
+}
+/* --- MOBİL TAM DÜZELTME PAKETİ --- */
+@media (max-width: 768px) {
+  /* 1. Üst Kısmı Özgür Bırak */
+  .site-header {
+    position: relative !important; /* Sabit durup içeriği ezmesini engeller [cite: 1] */
+    height: auto !important;
+    padding: 10px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 10px !important;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05) !important;
+  }
+
+  .header-title {
+    font-size: 16px !important;
+    margin: 0 !important;
+    text-align: center !important;
+  }
+
+  .header-sub {
+    font-size: 10px !important;
+    margin-bottom: 5px !important;
+  }
+
+  /* 2. Üst Butonları Düzenle  */
+  .header-btns {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important; /* Butonları 2x2 hizalar */
+    gap: 5px !important;
+    width: 100% !important;
+  }
+
+  .header-btns .btn {
+    padding: 8px 2px !important;
+    font-size: 11px !important;
+    justify-content: center !important;
+    margin: 0 !important;
+  }
+
+  /* 3. Menü Sekmelerini (Boyut, Ürün vb.) Yan Yana Sığdır [cite: 10, 11, 12] */
+  .steps-nav {
+    display: flex !important;
+    justify-content: space-around !important;
+    padding: 5px 0 !important;
+  }
+
+  .step-item {
+    font-size: 10px !important;
+    padding: 5px !important;
+  }
+
+  /* 4. Etiket Seçeneklerini Küçült [cite: 14, 16, 19] */
+  .size-grid {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 10px !important;
+  }
+
+  /* 5. Önizleme Alanını ve Yazıları Hizala [cite: 26, 36] */
+  .preview-section {
+    margin-top: 15px !important;
+    padding: 10px !important;
+  }
+
+  #canvas-container {
+    max-width: 100% !important;
+    overflow: hidden !important;
+  }
+
+  /* 6. Sayfanın Altındaki Yeşil SEO Bloğunu Düzelt [cite: 57, 128] */
+  .info-card {
+    margin: 20px 10px !important;
+    padding: 15px !important;
+    border-radius: 15px !important;
+  }
+
+  .cta-section {
+    position: relative !important;
+    width: 100% !important;
+    margin-top: 20px !important;
+  }
+
+  body {
+    padding-top: 0 !important; /* Header fixed olmadığı için boşluğa gerek yok */
+  }
+}
+
+/* --- TASARIM ALANI RESPONSIVE GÜNCELLEME --- */
+@media (max-width: 768px) {
+  .preview-area {
+    padding: 10px !important;
+    min-height: auto !important;
+    overflow: hidden !important; /* Taşmaları engeller [cite: 1] */
+    display: flex;
+    justify-content: center;
+    background: #f0f0f0; /* Mobilde daha sade arka plan */
+    border-radius: 8px;
+  }
+
+  /* Etiket alanını ekran genişliğine göre küçültme */
+  .preview-wrapper {
+    transform-origin: top center; /* Üstten merkeze odaklı küçültür */
+    transform: scale(0.65); /* Ekranın %65'ine sığacak şekilde ölçekler */
+    margin-bottom: -100px; /* Ölçeklemeden kaynaklı boşluğu temizler */
+  }
+
+  .label-paper {
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15) !important; /* Mobilde derinlik katar [cite: 26] */
+  }
+}
+
+/* Küçük telefonlar için ekstra ölçekleme */
+@media (max-width: 400px) {
+  .preview-wrapper {
+    transform: scale(0.5); /* Çok küçük ekranlarda %50 küçültme */
+    margin-bottom: -150px;
+  }
+}
+
+/* --- TASARIM ALANI MOBİL UYUM --- */
+@media (max-width: 768px) {
+  #preview-area {
+    padding: 20px 10px !important;
+    display: flex !important;
+    justify-content: center !important;
+    overflow: hidden !important; /* Etiketin dışarı taşmasını keser */
+    min-height: auto !important;
+    background: #e5e7eb !important; /* Arka planı belirginleştirir  */
+  }
+
+  #preview-wrapper {
+    transform-origin: top center; /* Üst ortadan küçültür  */
+    transition: transform 0.2s ease;
+  }
+}
+
+</style>
+</head>
+<body>
+ 
+<!-- HEADER -->
+<header class="site-header">
+  <div class="header-logo">🏷️</div>
+  <div>
+    <h1 class="header-title">
+  <a href="/" style="text-decoration: none; color: inherit;">Koli Etiketi Sistemi</a>
+</h1>
+    <h2 class="header-sub">Gıda Mevzuatına Uygun · Profesyonel</h2>
+  </div>
+  <div class="header-btns">
+    <button class="btn btn-gray btn-sm" onclick="saveData()">💾 Kaydet</button>
+    <button class="btn btn-gray btn-sm" onclick="clearSavedData()" style="background:#6b7280;color:white" title="Kaydedilmiş önbelleği temizle ve sıfırla">🗑 Sıfırla</button>
+    <button class="btn btn-gray btn-sm" onclick="doPrintAll()">🖨️ Toplu Yazdır</button>
+    <button class="btn btn-blue btn-sm" onclick="exportPDFAll()">📄 Toplu PDF</button>
+    <button class="btn btn-green btn-sm" onclick="doPrint()">🖨️ Tekli Yazdır</button>
+  </div>
+</header>
+ 
+<!-- TOAST -->
+<div id="toast" class="success-toast" style="display:none">✅ <span id="toast-msg">Kaydedildi!</span></div>
+ 
+<!-- MAIN -->
+<div class="main-layout">
+ 
+  <!-- LEFT: Controls -->
+  <div>
+ 
+    <!-- STEP NAVIGATION -->
+    <div class="panel" style="margin-bottom:20px">
+      <div class="step-nav" id="step-nav">
+        <button class="step-btn active" onclick="showStep(1)" id="step-btn-1">
+          <span class="step-icon">📐</span>
+          <span class="step-num" id="stepnum-1">1</span>
+          <span>Boyut</span>
+        </button>
+        <button class="step-btn" onclick="showStep(2)" id="step-btn-2">
+          <span class="step-icon">📦</span>
+          <span class="step-num" id="stepnum-2">2</span>
+          <span>Ürün</span>
+        </button>
+        <button class="step-btn" onclick="showStep(3)" id="step-btn-3">
+          <span class="step-icon">🔤</span>
+          <span class="step-num" id="stepnum-3">3</span>
+          <span>Yazılar</span>
+        </button>
+        <button class="step-btn" onclick="showStep(4)" id="step-btn-4">
+          <span class="step-icon">🔲</span>
+          <span class="step-num" id="stepnum-4">4</span>
+          <span>QR Kod</span>
+        </button>
+      </div>
+ 
+      <!-- STEP 1: BOYUT -->
+      <div id="step-1" class="panel-body">
+        <div class="section-title"><span class="icon">📐</span> Etiket Boyutu Seçin</div>
+        <div class="preset-grid" id="preset-grid" style="grid-template-columns:1fr 1fr 1fr">
+          <div class="preset-card" onclick="selectPreset('v56x45')" id="preset-v56x45">
+            <div class="preset-icon">🏷️</div>
+            <div class="preset-name">Küçük</div>
+            <div class="preset-size">56 × 45 mm</div>
+          </div>
+          <div class="preset-card selected" onclick="selectPreset('v57x70')" id="preset-v57x70">
+            <div class="preset-icon">📄</div>
+            <div class="preset-name">Dik</div>
+            <div class="preset-size">57 × 70 mm</div>
+          </div>
+          <div class="preset-card" onclick="selectPreset('v100x60')" id="preset-v100x60">
+            <div class="preset-icon">🗒️</div>
+            <div class="preset-name">Yatay</div>
+            <div class="preset-size">100 × 60 mm</div>
+          </div>
+          <div class="preset-card" onclick="selectPreset('v100x100')" id="preset-v100x100">
+            <div class="preset-icon">📦</div>
+            <div class="preset-name">Kare</div>
+            <div class="preset-size">100 × 100 mm</div>
+          </div>
+          <div class="preset-card" onclick="selectPreset('v100x150')" id="preset-v100x150">
+            <div class="preset-icon">📋</div>
+            <div class="preset-name">Büyük</div>
+            <div class="preset-size">100 × 150 mm</div>
+          </div>
+          <div class="preset-card" onclick="selectPreset('custom')" id="preset-custom">
+            <div class="preset-icon">⚙️</div>
+            <div class="preset-name">Özel</div>
+            <div class="preset-size">Serbest ölçü</div>
+          </div>
+        </div>
+        <div id="custom-size" style="display:none;margin-top:16px">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Genişlik (mm)</label>
+              <input class="form-input" type="number" id="cw" value="100" min="10" max="300" onchange="onCustomSize()"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Yükseklik (mm)</label>
+              <input class="form-input" type="number" id="ch" value="100" min="10" max="300" onchange="onCustomSize()"/>
+            </div>
+          </div>
+        </div>
+ 
+        <div class="section-title" style="margin-top:22px"><span class="icon">📏</span> Kenar Boşlukları (mm)</div>
+        <div class="margin-grid">
+          <div class="form-group"><label class="form-label">Üst</label><input class="form-input" type="number" id="mg-top" value="1" step="0.5" min="0" onchange="renderLabel()"/></div>
+          <div class="form-group"><label class="form-label">Alt</label><input class="form-input" type="number" id="mg-bottom" value="1" step="0.5" min="0" onchange="renderLabel()"/></div>
+          <div class="form-group"><label class="form-label">Sol</label><input class="form-input" type="number" id="mg-left" value="1" step="0.5" min="0" onchange="renderLabel()"/></div>
+          <div class="form-group"><label class="form-label">Sağ</label><input class="form-input" type="number" id="mg-right" value="1" step="0.5" min="0" onchange="renderLabel()"/></div>
+        </div>
+        <button class="btn btn-green btn-full" onclick="showStep(2)">Devam Et →</button>
+      </div>
+ 
+      <!-- STEP 2: ÜRÜN -->
+      <div id="step-2" class="panel-body" style="display:none">
+        <div class="product-nav">
+          <button class="nav-arrow" id="nav-prev" onclick="prevProduct()">◀</button>
+          <div class="nav-info">
+            <div class="nav-count" id="nav-count">1 / 1 ürün</div>
+            <div class="nav-name" id="nav-name">—</div>
+          </div>
+          <button class="nav-arrow" id="nav-next" onclick="nextProduct()">▶</button>
+        </div>
+
+        <div class="info-card" style="padding:10px 14px;font-size:13px;margin-bottom:12px">
+          <span class="info-icon">🔲</span>
+          <span>QR kod içeriği otomatik oluşur: <strong>Barkod / Tarih / Parti No</strong></span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">📦 Ürün Adı <span style="font-size:12px;color:var(--gray-400)">(etikette büyük görünür)</span></label>
+          <input class="form-input" id="f-urunAdi" type="text" placeholder="Örn: LİMON TUZU 250G" oninput="updateCurProduct()" style="font-size:16px;font-weight:800;text-transform:uppercase"/>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">📦 Alt Bilgi <span style="font-size:12px;color:var(--gray-400)">(örn: 250G X 12 ADET)</span></label>
+          <input class="form-input" id="f-altBilgi" type="text" placeholder="250G X 12 ADET" oninput="updateCurProduct()" style="font-size:16px;font-weight:800;text-transform:uppercase"/>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">||| Barkod Numarası</label>
+            <input class="form-input" id="f-barkod" type="text" placeholder="08691530011318" oninput="updateCurProduct()" style="font-family:monospace;font-size:15px"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">📅 Tarih (STT/TETT)</label>
+            <input class="form-input" id="f-stt" type="text" placeholder="02022028" oninput="updateCurProduct()"/>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">🔢 Parti / Lot No</label>
+            <input class="form-input" id="f-partiNo" type="text" placeholder="001-0202" oninput="updateCurProduct()"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">❄️ Saklama / Alt Not</label>
+            <input class="form-input" id="f-saklama" type="text" placeholder="SERİN VE KURU YERDE DEPOLAYINIZ" oninput="updateCurProduct()"/>
+          </div>
+        </div>
+
+        <!-- QR İçerik Önizleme -->
+        <div style="background:var(--gray-50);border:1.5px solid var(--gray-200);border-radius:8px;padding:10px 13px;margin-top:4px;margin-bottom:12px">
+          <div style="font-size:12px;font-weight:700;color:var(--gray-500);margin-bottom:4px">🔲 QR KOD İÇERİĞİ (otomatik)</div>
+          <div id="qr-auto-preview" style="font-family:monospace;font-size:13px;color:var(--gray-800);word-break:break-all">—</div>
+        </div>
+
+        <div style="display:flex;gap:10px;margin-top:14px">
+          <button class="btn btn-green" onclick="addProduct()" style="flex:1">+ Yeni Ürün Ekle</button>
+          <button class="btn btn-red btn-sm" onclick="deleteProduct()">🗑</button>
+        </div>
+        <button class="btn btn-green btn-full" style="margin-top:12px" onclick="showStep(3)">Devam Et →</button>
+      </div>
+ 
+      <!-- STEP 3: YAZILAR VE GÖRSELLER -->
+      <div id="step-3" class="panel-body" style="display:none">
+        <div class="section-title"><span class="icon">🔤</span> Yazılar, Görseller ve Hizalama</div>
+        <div class="info-card">
+          <span class="info-icon">💡</span>
+          <span>Her satırın başlığına tıklayarak değiştirebilirsiniz. Sağ taraftaki önizlemede anlık olarak görebilirsiniz.</span>
+        </div>
+        <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:10px;margin-bottom:14px">
+          <input type="file" id="logo-upload" accept="image/*" style="display:none" onchange="handleLogoUpload(event)">
+          <button class="btn btn-blue btn-sm" onclick="document.getElementById('logo-upload').click()">+ Logo Ekle</button>
+          <button class="btn btn-green btn-sm" onclick="addCustomTextElem()">+ Serbest Metin Ekle</button>
+        </div>
+
+        <!-- Logo kontrolleri -->
+        <div id="koli-logo-controls" style="display:none;background:var(--gray-50);border:2px solid var(--gray-200);border-radius:var(--radius-sm);padding:12px;margin-bottom:14px">
+          <div style="font-size:13px;font-weight:800;color:var(--gray-700);margin-bottom:10px">🖼️ Logo Ayarları</div>
+          <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap">
+            <button onclick="rotateLogoKoli(-90)" class="btn btn-gray btn-sm" style="flex:1;padding:7px 4px;font-size:12px">↺ Sola 90°</button>
+            <button onclick="rotateLogoKoli(90)"  class="btn btn-gray btn-sm" style="flex:1;padding:7px 4px;font-size:12px">↻ Sağa 90°</button>
+            <button onclick="rotateLogoKoli(180)" class="btn btn-gray btn-sm" style="flex:1;padding:7px 4px;font-size:12px">↕ 180°</button>
+            <button onclick="removeLogoKoli()" class="btn btn-red btn-sm" style="padding:7px 10px;font-size:12px">🗑 Kaldır</button>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <button class="size-btn" onclick="scaleLogoKoli(-0.1)">−</button>
+            <span id="koli-logo-scale-val" style="min-width:48px;text-align:center;font-size:14px;font-weight:900;color:var(--green-dark);background:var(--green-xlight);border:2px solid var(--green-light);border-radius:6px;padding:2px 0">100%</span>
+            <button class="size-btn" onclick="scaleLogoKoli(0.1)">+</button>
+            <input type="range" min="10" max="300" value="100" oninput="logoScale=parseInt(this.value)/100;document.getElementById('koli-logo-scale-val').textContent=this.value+'%';renderLabel()" style="flex:1;accent-color:var(--green)"/>
+          </div>
+        </div>
+        <div id="font-editor"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px">
+          <button class="btn btn-gray btn-sm" onclick="applyFontPreset('standart')">Standart</button>
+          <button class="btn btn-gray btn-sm" onclick="applyFontPreset('buyuk')">Büyük Yazı</button>
+          <button class="btn btn-gray btn-sm" onclick="applyFontPreset('kompakt')">Kompakt</button>
+          <button class="btn btn-gray btn-sm" onclick="applyFontPreset('vurgu')">Fiyat Vurgu</button>
+        </div>
+        <button class="btn btn-green btn-full" style="margin-top:14px" onclick="showStep(4)">Devam Et →</button>
+      </div>
+ 
+      <!-- STEP 4: KOD -->
+      <div id="step-4" class="panel-body" style="display:none">
+        <div class="section-title"><span class="icon">🔲</span> Barkod / QR Kod Ayarları</div>
+ 
+        <!-- Code type selector -->
+        <div style="margin-bottom:18px">
+          <div style="font-size:16px;font-weight:800;color:var(--gray-700);margin-bottom:10px">📌 Etikete Eklenecekler:</div>
+          <div style="display:flex;gap:15px;margin-bottom:10px">
+            <label style="display:flex;align-items:center;gap:8px;font-size:15px;cursor:pointer">
+              <input type="checkbox" id="toggle-qr" checked onchange="toggleElemVisibility('qr', this.checked)" style="width:18px;height:18px;accent-color:var(--green)">
+              <span style="font-size:20px">🔲</span> QR Kod
+            </label>
+            <label style="display:flex;align-items:center;gap:8px;font-size:15px;cursor:pointer">
+              <input type="checkbox" id="toggle-barkod" onchange="toggleElemVisibility('barkod_img', this.checked)" style="width:18px;height:18px;accent-color:var(--green)">
+              <span style="font-size:20px">|||</span> Barkod (Görsel)
+            </label>
+          </div>
+        </div>
+
+        <!-- QR section -->
+        <div id="qr-section">
+          <div class="info-card">
+            <span class="info-icon">💡</span>
+            <span>QR koda hangi bilgilerin ekleneceğini seçin. Telefon veya okuyucu ile tarandığında bu bilgiler görünecektir.</span>
+          </div>
+          <div id="qr-field-list"></div>
+          <div style="background:var(--gray-100);border-radius:var(--radius-sm);padding:16px;margin-top:14px">
+            <div style="font-size:16px;font-weight:800;color:var(--gray-700);margin-bottom:10px">+ Özel Bilgi Ekle</div>
+            <div class="form-row">
+              <div class="form-group"><input class="form-input" id="qr-custom-label" placeholder="Bilgi adı (örn: Lot No)"/></div>
+              <div class="form-group"><input class="form-input" id="qr-custom-val" placeholder="Değer (örn: LOT2026)"/></div>
+            </div>
+            <button class="btn btn-green btn-sm" onclick="addCustomQrField()">Ekle</button>
+          </div>
+          <div style="margin-top:16px">
+            <div style="font-size:15px;font-weight:800;color:var(--gray-600);margin-bottom:8px">QR İçerik Önizleme:</div>
+            <div class="qr-preview-box" id="qr-content-preview">—</div>
+            <div style="display:flex;justify-content:center">
+              <div id="qr-big-preview"></div>
+            </div>
+          </div>
+        </div>
+ 
+        <!-- Barkod section -->
+        <div id="ean13-section" style="display:none;margin-top:20px;padding-top:20px;border-top:2px solid var(--gray-200)">
+          <div class="info-card">
+            <span class="info-icon">💡</span>
+            <span>EAN-13 için 13 haneli sayı, EAN-128 için serbest metin girebilirsiniz.</span>
+          </div>
+          <div style="background:var(--gray-50);border:2px solid var(--gray-200);border-radius:var(--radius-sm);padding:16px;margin-bottom:14px">
+            <div style="font-size:15px;font-weight:800;color:var(--gray-700);margin-bottom:8px">Barkod Türü:</div>
+            <label style="display:flex;align-items:center;gap:10px;font-size:16px;cursor:pointer;margin-bottom:8px">
+              <input type="radio" name="bcode-type" value="ean13" onchange="barcodeType='ean13';renderLabel()" style="width:18px;height:18px;accent-color:var(--green)"/>
+              EAN-13 (Standart Ürün Barkodu)
+            </label>
+            <label style="display:flex;align-items:center;gap:10px;font-size:16px;cursor:pointer;margin-bottom:8px">
+              <input type="radio" name="bcode-type" value="code128" checked onchange="barcodeType='code128';renderLabel()" style="width:18px;height:18px;accent-color:var(--green)"/>
+              Code128 / EAN-128 (Alfabetik / Uzun Kod)
+            </label>
+            <label style="display:flex;align-items:center;gap:10px;font-size:16px;cursor:pointer;margin-bottom:14px">
+              <input type="radio" name="bcode-type" value="code39" onchange="barcodeType='code39';renderLabel()" style="width:18px;height:18px;accent-color:var(--green)"/>
+              Code39 (Harf + Rakam, Sektörel)
+            </label>
+            <div style="height:1px;background:var(--gray-200);margin-bottom:14px"></div>
+            <div style="font-size:15px;font-weight:800;color:var(--gray-700);margin-bottom:8px">Barkod Verisi:</div>
+            <label style="display:flex;align-items:center;gap:10px;font-size:16px;cursor:pointer;margin-bottom:8px">
+              <input type="radio" name="ean-src" value="barkod" checked onchange="renderLabel()" style="width:18px;height:18px;accent-color:var(--green)"/>
+              Ürün Barkod Numarasını Kullan
+            </label>
+            <label style="display:flex;align-items:center;gap:10px;font-size:16px;cursor:pointer">
+              <input type="radio" name="ean-src" value="custom" onchange="renderLabel()" style="width:18px;height:18px;accent-color:var(--green)"/>
+              Özel Barkod Numarası
+            </label>
+            <input class="form-input" id="ean-custom-val" placeholder="Barkod verisi giriniz" style="margin-top:10px" oninput="renderLabel()"/>
+          </div>
+          <div style="margin-top:14px;background:var(--gray-50);border:2px solid var(--gray-200);border-radius:var(--radius-sm);padding:14px">
+            <div style="font-size:15px;font-weight:800;color:var(--gray-700);margin-bottom:10px">📏 Barkod Boyutu Ayarı</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+              <div>
+                <div style="font-size:13px;font-weight:700;color:var(--gray-600);margin-bottom:6px">Alan Genişliği (mm)</div>
+                <div style="display:flex;align-items:center;gap:6px">
+                  <button class="size-btn" onclick="resizeQrElem('w',-2)">−</button>
+                  <span id="ean-w-val" style="min-width:46px;text-align:center;font-weight:800;color:var(--green-dark);font-size:14px">—</span>
+                  <button class="size-btn" onclick="resizeQrElem('w',2)">+</button>
+                </div>
+              </div>
+              <div>
+                <div style="font-size:13px;font-weight:700;color:var(--gray-600);margin-bottom:6px">Alan Yüksekliği (mm)</div>
+                <div style="display:flex;align-items:center;gap:6px">
+                  <button class="size-btn" onclick="resizeQrElem('h',-1)">−</button>
+                  <span id="ean-h-val" style="min-width:46px;text-align:center;font-weight:800;color:var(--green-dark);font-size:14px">—</span>
+                  <button class="size-btn" onclick="resizeQrElem('h',1)">+</button>
+                </div>
+              </div>
+            </div>
+            <div style="margin-top:10px">
+              <div style="font-size:13px;font-weight:700;color:var(--gray-600);margin-bottom:6px">Rakam Yazı Boyutu</div>
+              <div style="display:flex;align-items:center;gap:8px">
+                <button class="size-btn" onclick="changeEanFontSize(-1)">−</button>
+                <span id="ean-fs-val" style="min-width:52px;text-align:center;font-size:16px;font-weight:900;color:var(--green-dark);background:var(--green-xlight);border:2px solid var(--green-light);border-radius:7px;padding:3px 0">6pt</span>
+                <button class="size-btn" onclick="changeEanFontSize(1)">+</button>
+                <input type="range" min="4" max="24" value="6" id="ean-fs-range" oninput="setEanFontSize(parseInt(this.value))" style="flex:1;accent-color:var(--green)"/>
+              </div>
+            </div>
+          </div>
+          <div style="background:white;border:2px solid var(--gray-200);border-radius:var(--radius-sm);padding:16px;display:flex;align-items:center;justify-content:center;min-height:90px">
+            <canvas id="ean13-preview-canvas" style="max-width:100%"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+ 
+  </div>
+ 
+  <!-- RIGHT: Preview -->
+  <div>
+    <div class="panel" style="position:sticky;top:90px">
+      <div class="panel-header">
+        👁️ Canlı Önizleme
+        <span style="margin-left:auto;font-size:14px;opacity:0.85" id="preview-size-label"></span>
+      </div>
+      <div class="panel-body" style="padding:16px">
+ 
+        <!-- Zoom -->
+        <div class="zoom-bar">
+          <span class="zoom-label">🔍 Yakınlaştır:</span>
+          <button class="size-btn" onclick="changeZoom(-0.15)">−</button>
+          <span class="zoom-val" id="zoom-val">100%</span>
+          <button class="size-btn" onclick="changeZoom(0.15)">+</button>
+          <button class="btn btn-gray btn-sm" onclick="setZoom(1)" style="margin-left:auto">Sıfırla</button>
+          <button class="btn btn-gray btn-sm" onclick="resetLayout()">↺ Düzeni Sıfırla</button>
+        </div>
+ 
+        <div class="info-card" style="font-size:14px;padding:10px 14px">
+          <span class="info-icon" style="font-size:18px">👆</span>
+          <div>
+            <div><strong>Tıkla + Sürükle</strong> — yazı alanını taşı</div>
+            <div><strong>Çift Tıkla</strong> — yazıyı direkt düzenle</div>
+            <div><strong>Seç + Sağ Alt Köşe</strong> — alanı büyüt / küçült</div>
+          </div>
+        </div>
+ 
+        <!-- Selected element resize panel -->
+        <!-- ── EK YAZI EKLE — her adımda görünür ── -->
+        <div style="background:var(--green-xlight);border:2px solid var(--green-light);border-radius:var(--radius-sm);padding:13px 16px;margin-bottom:10px">
+          <div style="font-size:15px;font-weight:900;color:var(--green-dark);margin-bottom:10px">📝 Ek Yazı Ekle</div>
+          <div style="display:flex;gap:8px;margin-bottom:8px">
+            <input id="new-text-input" class="form-input" placeholder="Yazı içeriğini girin..." style="flex:1;font-size:14px;padding:9px 12px"/>
+            <button onclick="addTextFromEditor()" class="btn btn-green" style="padding:9px 16px;font-size:14px;white-space:nowrap;font-weight:800">+ Ekle</button>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px">
+            <label style="font-size:12px;font-weight:700;color:var(--gray-600)">Punto:</label>
+            <button class="size-btn" onclick="newTextSize=Math.max(6,newTextSize-1);updateNewTextPreview()">−</button>
+            <span id="new-text-size-val" style="min-width:36px;text-align:center;font-weight:800;font-size:14px;color:var(--green-dark)">10pt</span>
+            <button class="size-btn" onclick="newTextSize=Math.min(72,newTextSize+1);updateNewTextPreview()">+</button>
+            <button id="new-text-bold-btn" onclick="newTextBold=!newTextBold;this.classList.toggle('active');updateNewTextPreview()" class="align-btn" style="font-weight:900;font-size:14px;padding:4px 10px">B</button>
+            <div style="display:flex;gap:3px;margin-left:2px">
+              <button class="align-btn" id="new-align-left"   onclick="newTextAlign='left';setNewAlign(this)"   title="Sola">◀</button>
+              <button class="align-btn active" id="new-align-center" onclick="newTextAlign='center';setNewAlign(this)" title="Ortala">●</button>
+              <button class="align-btn" id="new-align-right"  onclick="newTextAlign='right';setNewAlign(this)"  title="Sağa">▶</button>
+            </div>
+          </div>
+          <div id="new-text-preview" style="padding:7px 10px;background:white;border:1px solid var(--gray-200);border-radius:7px;min-height:30px;font-family:Arial,sans-serif;font-size:10px;text-align:center;color:var(--gray-400)">Yazı önizlemesi burada görünür</div>
+          <!-- Mevcut ek yazılar -->
+          <div id="extra-fields-list" style="margin-top:10px"></div>
+        </div>
+
+        <!-- SEÇİLİ ALAN PANELİ -->
+        <div id="sel-elem-panel" style="display:none;background:var(--blue-light);border:2px solid #93c5fd;border-radius:var(--radius-sm);padding:12px 16px;margin-bottom:10px">
+          <div style="font-size:14px;font-weight:800;color:var(--blue);margin-bottom:10px">⚙️ Seçili Alan: <span id="sel-elem-name">—</span></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:10px">
+            <div>
+              <div style="font-size:11px;font-weight:700;color:var(--gray-600);margin-bottom:4px">GENİŞLİK (mm)</div>
+              <div style="display:flex;align-items:center;gap:6px">
+                <button class="size-btn" onclick="resizeElem('w',-1)">−</button>
+                <span id="sel-w" style="min-width:48px;text-align:center;font-weight:800;font-size:14px;color:var(--blue-dark)">—</span>
+                <button class="size-btn" onclick="resizeElem('w',1)">+</button>
+              </div>
+            </div>
+            <div>
+              <div style="font-size:11px;font-weight:700;color:var(--gray-600);margin-bottom:4px">YÜKSEKLİK (mm)</div>
+              <div style="display:flex;align-items:center;gap:6px">
+                <button class="size-btn" onclick="resizeElem('h',-0.5)">−</button>
+                <span id="sel-h" style="min-width:48px;text-align:center;font-weight:800;font-size:14px;color:var(--blue-dark)">—</span>
+                <button class="size-btn" onclick="resizeElem('h',0.5)">+</button>
+              </div>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div>
+              <div style="font-size:11px;font-weight:700;color:var(--gray-600);margin-bottom:4px">YAZI BOYUTU (pt)</div>
+              <div style="display:flex;align-items:center;gap:6px">
+                <button class="size-btn" onclick="changeFontSizeSelected(-1)">−</button>
+                <span id="sel-fs" style="min-width:48px;text-align:center;font-weight:800;font-size:14px;color:var(--green-dark)">—</span>
+                <button class="size-btn" onclick="changeFontSizeSelected(1)">+</button>
+              </div>
+            </div>
+            <div>
+              <div style="font-size:11px;font-weight:700;color:var(--gray-600);margin-bottom:4px">HİZALAMA</div>
+              <div style="display:flex;gap:4px">
+                <button class="align-btn" id="sel-align-left"   onclick="setAlignSelected('left')"   title="Sola">◀</button>
+                <button class="align-btn" id="sel-align-center" onclick="setAlignSelected('center')" title="Ortala">●</button>
+                <button class="align-btn" id="sel-align-right"  onclick="setAlignSelected('right')"  title="Sağa">▶</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Label canvas -->
+        <div class="preview-area" id="preview-area" style="position:relative;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:14px;gap:12px">
+
+          <!-- FLOATING TOOLBAR — preview-area içinde, etiketten önce -->
+          <div id="floating-toolbar" style="display:none;width:100%;max-width:620px;background:white;border:2px solid #3b82f6;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,0.18);padding:12px 16px;animation:ftSlide 0.15s ease;flex-shrink:0">
+            <div class="ft-label">
+              <span style="font-size:13px;font-weight:900;color:#1d4ed8">✏️ <span id="ft-elem-name">—</span></span>
+              <button onclick="closeFloatingToolbar()" style="background:none;border:none;font-size:20px;cursor:pointer;color:#94a3b8;line-height:1;padding:0 4px">×</button>
+            </div>
+            <!-- Satır 1: Punto + Bold + Hizalama + Gizle -->
+            <div class="ft-row">
+              <span style="font-size:11px;font-weight:700;color:#64748b">Punto:</span>
+              <button class="size-btn" onclick="changeFontSizeSelected(-1)">−</button>
+              <span id="ft-fs" style="min-width:34px;text-align:center;font-weight:800;font-size:14px;color:#15803d">—</span>
+              <button class="size-btn" onclick="changeFontSizeSelected(1)">+</button>
+              <div class="ft-sep"></div>
+              <button id="ft-bold-btn" onclick="toggleSelBold()" class="align-btn" style="font-weight:900;font-size:15px;padding:3px 12px" title="Kalın">B</button>
+              <div class="ft-sep"></div>
+              <button class="align-btn" id="ft-align-left"   onclick="setAlignSelected('left');updateFloatingToolbar()"   title="Sola">◀</button>
+              <button class="align-btn" id="ft-align-center" onclick="setAlignSelected('center');updateFloatingToolbar()" title="Ortala">●</button>
+              <button class="align-btn" id="ft-align-right"  onclick="setAlignSelected('right');updateFloatingToolbar()"  title="Sağa">▶</button>
+              <div class="ft-sep"></div>
+              <button id="ft-hide-btn" onclick="hideSelectedElem()" style="background:#dc2626;color:white;border:none;border-radius:6px;padding:5px 12px;font-size:12px;font-weight:700;cursor:pointer" title="Gizle">🗑 Gizle</button>
+            </div>
+            <!-- Satır 2: Yazı değiştir -->
+            <div id="ft-text-row" style="display:none;border-top:1px solid #e2e8f0;padding-top:10px;margin-top:4px">
+              <div id="ft-prefix-row" style="display:none;margin-bottom:8px">
+                <div style="font-size:10px;font-weight:700;color:#94a3b8;margin-bottom:3px">ÖN METİN</div>
+                <input id="ft-prefix-inp" class="form-input" style="font-size:13px;padding:7px 10px" placeholder="Ön metin..." oninput="applyFloatingEdit()"/>
+              </div>
+              <div style="font-size:10px;font-weight:700;color:#94a3b8;margin-bottom:4px">DEĞER — <span style="font-weight:400;color:#94a3b8">yazarken anlık güncellenir</span></div>
+              <input id="ft-value-inp" class="form-input" style="font-size:16px;font-weight:700;padding:11px 14px;border-color:#3b82f6;border-width:2px" placeholder="Yazı içeriğini girin..." oninput="applyFloatingEdit()"/>
+            </div>
+          </div>
+
+          <!-- Etiket -->
+          <div class="preview-wrapper" id="preview-wrapper" style="position:relative;display:inline-block;">
+            <div class="label-paper" id="label-paper"></div>
+          </div>
+        </div>
+
+        <!-- Print buttons -->
+        <div style="background:var(--gray-50);border:2px solid var(--gray-200);border-radius:var(--radius-sm);padding:12px 14px;margin-top:16px">
+          <div style="font-size:14px;font-weight:800;color:var(--gray-700);margin-bottom:10px">🖨️ Yazdırma Seçenekleri</div>
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;background:white;border:2px solid var(--gray-200);border-radius:8px;padding:8px 12px">
+            <span style="font-size:15px;font-weight:700;color:var(--gray-700)">Adet:</span>
+            <button class="size-btn" onclick="setCopies(printCopies-1)">−</button>
+            <span id="copies-val" style="min-width:36px;text-align:center;font-size:18px;font-weight:900;color:var(--green-dark)">1</span>
+            <button class="size-btn" onclick="setCopies(printCopies+1)">+</button>
+            <input type="range" min="1" max="50" value="1" id="copies-range" oninput="setCopies(parseInt(this.value))" style="flex:1;accent-color:var(--green)"/>
+            <span style="font-size:13px;color:var(--gray-500)">kopya</span>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <button class="btn btn-green" onclick="doPrint()" style="padding:13px 10px;font-size:15px">🖨️ Tekli Yazdır</button>
+            <button class="btn btn-blue" onclick="exportPDF()" style="padding:13px 10px;font-size:15px">📄 Tekli PDF</button>
+            <button class="btn btn-green" onclick="doPrintAll()" style="padding:13px 10px;font-size:15px;background:var(--green-dark)">🖨️ Toplu Yazdır<br/><small style="font-weight:600;opacity:0.85">(Tüm ürünler)</small></button>
+            <button class="btn btn-blue" onclick="exportPDFAll()" style="padding:13px 10px;font-size:15px;background:#1e40af">📄 Toplu PDF<br/><small style="font-weight:600;opacity:0.85">(Tüm ürünler)</small></button>
+          </div>
+        </div>
+
+        <!-- Save / Load file -->
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:10px">
+          <button class="btn" onclick="newLabel()" style="padding:11px 8px;font-size:13px;background:#7c3aed;color:white;font-weight:800">🆕 Yeni Etiket</button>
+          <button class="btn btn-gray" onclick="saveToFile()" style="padding:11px 8px;font-size:13px;background:#15803d;color:white">💾 Kaydet</button>
+          <button class="btn btn-gray" onclick="openFromFile()" style="padding:11px 8px;font-size:13px;background:#1d4ed8;color:white">📂 Aç</button>
+        </div>
+        <button onclick="saveAsFile()" class="btn btn-full" style="margin-top:8px;background:#0369a1;color:white;font-size:14px;font-weight:800;padding:11px">💾 Farklı Kaydet...</button>
+        <input type="file" id="load-file-input" accept=".json" style="display:none" onchange="loadFromFile(this)"/>
+        <div style="background:var(--green-xlight);border:1.5px solid var(--green-light);border-radius:8px;padding:10px 12px;margin-top:8px;font-size:13px;color:var(--green-dark)">
+          🆕 <strong>Yeni Etiket</strong> — temiz başlat &nbsp;·&nbsp; 💾 <strong>Kaydet</strong> — hızlı kaydet &nbsp;·&nbsp; 💾 <strong>Farklı Kaydet</strong> — isim belirle &nbsp;·&nbsp; 📂 <strong>Aç</strong> — projeyi yükle
+        </div>
+        </div>
+ 
+        <!-- Product nav under preview -->
+        <div class="product-nav" style="margin-top:14px">
+          <button class="nav-arrow" onclick="prevProduct()">◀</button>
+          <div class="nav-info">
+            <div class="nav-count" id="nav-count2">1 / 1</div>
+            <div class="nav-name" id="nav-name2">—</div>
+          </div>
+          <button class="nav-arrow" onclick="nextProduct()">▶</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PRINT AREA -->
+<div id="print-area"></div>
+
+<script>
+// ─── STATE ────────────────────────────────────────────────────────────────────
+const PX = 3.7795275591;
+let zoom = 1;
+let presetId = 'v57x70';  // Default: Dik 57×70mm
+let selEl = null;
+let selElId = null;
+let dragOffset = { x: 0, y: 0 };
+
+const PRESETS = {
+  v56x45:   { w: 56,  h: 45  },
+  v57x70:   { w: 57,  h: 70  },
+  v100x60:  { w: 100, h: 60  },
+  v100x100: { w: 100, h: 100 },
+  v100x150: { w: 100, h: 150 },
+  custom:   { w: null, h: null },
+};
+
+let ELEM_DEFS = [
+  { id: 'qr',          type: 'qr',      label: 'QR Kod',            field: null,       bold: false, defaultAlign: 'center' },
+  { id: 'qrMetin',     type: 'field',   label: 'QR Bilgi Satırı',   field: 'qrMetin',  bold: false, defaultAlign: 'center', prefix: '' },
+  { id: 'urunAdi',     type: 'field',   label: 'Ürün Adı',          field: 'urunAdi',  bold: true,  defaultAlign: 'center' },
+  { id: 'altBilgi',    type: 'field',   label: 'Alt Bilgi',         field: 'altBilgi', bold: true,  defaultAlign: 'center' },
+  { id: 'barkodBaslik',type: 'field',   label: 'Barkod Başlığı',    field: null, bold: false, defaultAlign: 'center', prefix: 'KOLİ BARKODU' },
+  { id: 'barkod_img',  type: 'barcode', label: 'Barkod (Görsel)',   field: null,       bold: false, defaultAlign: 'center' },
+  { id: 'barkod',      type: 'field',   label: 'Barkod No (Yazı)',  field: 'barkod',   bold: false, defaultAlign: 'center', mono: true },
+  { id: 'saklama',     type: 'field',   label: 'Saklama / Alt Not', field: 'saklama',  bold: false, defaultAlign: 'center', prefix: '' },
+];
+
+let customTexts = [];
+let globalLogo = null;
+let logos = {};
+let barcodeType = 'code128'; // EAN-128 (Code128)
+let printCopies = 1;
+
+let fontSizes = { qr:10, qrMetin:9, urunAdi:22, altBilgi:20, barkodBaslik:11, barkod_img:10, barkod:9, saklama:10 };
+let aligns    = { qr:'center', qrMetin:'center', urunAdi:'center', altBilgi:'center', barkodBaslik:'center', barkod_img:'center', barkod:'center', saklama:'center' };
+let prefixes  = { qr:'', qrMetin:'', urunAdi:'', altBilgi:'', barkodBaslik:'KOLİ BARKODU', barkod_img:'', barkod:'', saklama:'' };
+let customLabels = {};
+let margins   = { top: 3, bottom: 3, left: 3, right: 3 };
+let layout    = [];
+let products  = [{
+  urunAdi: 'LİMON TUZU 250G',
+  altBilgi: '250G X 12 ADET',
+  barkod: '08691530011318',
+  stt: '02022028',
+  partiNo: '001-0202',
+  saklama: 'SERİN VE KURU YERDE DEPOLAYINIZ',
+  barkodBaslik: 'KOLİ BARKODU',
+  qrMetin: '',
+  extraFields: []
+}];
+let selProd = 0;
+let qrFields = [
+  { id:'qr_barkod', type:'field', label:'Barkod',    field:'barkod',   enabled:true  },
+  { id:'qr_stt',    type:'field', label:'Tarih',     field:'stt',      enabled:true  },
+  { id:'qr_parti',  type:'field', label:'Parti No',  field:'partiNo',  enabled:true  },
+  { id:'qr_urun',   type:'field', label:'Ürün Adı',  field:'urunAdi',  enabled:false },
+];
+ 
+// ─── HELPERS ─────────────────────────────────────────────────────────────────
+function getLW() { return presetId === 'custom' ? (parseFloat(document.getElementById('cw').value)||30) : PRESETS[presetId].w; }
+function getLH() { return presetId === 'custom' ? (parseFloat(document.getElementById('ch').value)||70) : PRESETS[presetId].h; }
+function getMg() { return { top: +document.getElementById('mg-top').value||0, bottom: +document.getElementById('mg-bottom').value||0, left: +document.getElementById('mg-left').value||0, right: +document.getElementById('mg-right').value||0 }; }
+function getCur() { return products[selProd] || products[0]; }
+function getKilo(p) { return null; }
+function getQrData() {
+  const p = getCur();
+  const parts = qrFields.filter(f=>f.enabled).map(f=>{
+    if (f.type==='field') return p[f.field]||'';
+    if (f.type==='custom') return f.value||'';
+    return '';
+  }).filter(Boolean);
+  const result = parts.join(' / ');
+  // Auto-sync qrMetin display field
+  p.qrMetin = result;
+  return result;
+}
+ 
+// ─── LAYOUT ──────────────────────────────────────────────────────────────────
+function buildLayout() {
+  const W = getLW(), H = getLH();
+
+  // Universal layout matching the screenshot format:
+  // QR (top, centered) → QR text line → Ürün adı (big) → Alt bilgi → Barkod başlık → Barkod → Saklama
+  const qrSize = Math.min(W * 0.55, H * 0.32);
+  const qrX = (W - qrSize) / 2;
+
+  layout = [
+    { id:'qr',           x: qrX,   y: H*0.02,  w: qrSize,  h: qrSize       },
+    { id:'qrMetin',      x: 0,     y: H*0.02 + qrSize + 1, w: W, h: H*0.07 },
+    { id:'urunAdi',      x: 0,     y: H*0.02 + qrSize + H*0.07 + 1, w: W, h: H*0.20 },
+    { id:'altBilgi',     x: 0,     y: H*0.02 + qrSize + H*0.07 + H*0.20 + 1, w: W, h: H*0.18 },
+    { id:'barkodBaslik', x: 0,     y: H*0.74,  w: W,       h: H*0.06 },
+    { id:'barkod_img',   x: W*0.03,y: H*0.80,  w: W*0.94,  h: H*0.12 },
+    { id:'barkod',       x: 0,     y: H*0.93,  w: W,       h: H*0.04 },
+    { id:'saklama',      x: 0,     y: H*0.96,  w: W,       h: H*0.04 },
+  ];
+
+  renderLabel();
+}
+function resetLayout() { buildLayout(); }
+ 
+// ─── RENDER LABEL ────────────────────────────────────────────────────────────
+let qrCache = {};
+let lastQrData = '';
+ 
+function renderLabel() {
+  const W = getLW(), H = getLH();
+  const paper = document.getElementById('label-paper');
+  if (!paper) return;
+  paper.style.width  = (W * PX * zoom) + 'px';
+  paper.style.height = (H * PX * zoom) + 'px';
+  paper.style.transform = '';
+ 
+  const mg = getMg();
+  const p  = getCur();
+  const kilo = getKilo(p);
+  const qrData = getQrData();
+ 
+  document.getElementById('preview-size-label').textContent = `${W}×${H} mm`;
+ 
+  // Build QR if data changed
+  if (qrData !== lastQrData) {
+    lastQrData = qrData;
+    const qrEl = document.getElementById('qr-big-preview');
+    if (qrEl) { qrEl.innerHTML=''; try { new QRCode(qrEl, { text: qrData||' ', width:120, height:120, colorDark:'#000', colorLight:'#fff' }); } catch {} }
+  }
+ 
+  // QR preview content
+  const qrPrev = document.getElementById('qr-content-preview');
+  if (qrPrev) qrPrev.textContent = qrData || '— (hiç alan seçilmedi)';
+ 
+  // Margin guide
+  paper.innerHTML = `<div class="margin-guide" style="left:${mg.left*PX*zoom}px;top:${mg.top*PX*zoom}px;width:${(W-mg.left-mg.right)*PX*zoom}px;height:${(H-mg.top-mg.bottom)*PX*zoom}px"></div>`;
+ 
+  // Render each element
+  layout.forEach(item => {
+    const def = ELEM_DEFS.find(e => e.id === item.id);
+    if (!def) return;
+    const x = item.x * PX * zoom, y = item.y * PX * zoom;
+    const iw = item.w * PX * zoom, ih = item.h * PX * zoom;
+    const fs = (fontSizes[item.id] || 6) * zoom;
+    const align = aligns[item.id] || def.defaultAlign;
+    const prefix = prefixes[item.id] !== undefined ? prefixes[item.id] : (def.prefix||'');
+    const isSelected = selElId === item.id;
+ 
+    const div = document.createElement('div');
+    div.className = 'label-elem' + (isSelected ? ' selected' : '');
+    div.dataset.id = item.id;
+    div.style.cssText = `left:${x}px;top:${y}px;width:${iw}px;height:${ih}px;`;
+ 
+    if (def.type === 'qr') {
+      div.style.justifyContent = 'center';
+      div.style.alignItems = 'center';
+      const qrSize = Math.round(Math.min(iw, ih) - 2);
+      const qrContainer = document.createElement('div');
+      qrContainer.style.cssText = `width:${qrSize}px;height:${qrSize}px;flex-shrink:0;`;
+      const cacheKey = qrData + '_' + qrSize;
+      if (qrCache[cacheKey]) {
+        const img = document.createElement('img');
+        img.src = qrCache[cacheKey]; img.width = qrSize; img.height = qrSize;
+        img.style.imageRendering = 'pixelated';
+        qrContainer.appendChild(img);
+      } else {
+        const tmp = document.createElement('div');
+        tmp.style.cssText = 'position:fixed;left:-9999px;';
+        document.body.appendChild(tmp);
+        try {
+          new QRCode(tmp, { text: qrData||' ', width: qrSize, height: qrSize, colorDark:'#000', colorLight:'#fff' });
+          setTimeout(() => {
+            const c = tmp.querySelector('canvas');
+            if (c) {
+              const src = c.toDataURL('image/png');
+              qrCache[cacheKey] = src;
+              renderLabel();
+            }
+            tmp.remove();
+          }, 20);
+        } catch(e) { tmp.remove(); }
+      }
+      div.appendChild(qrContainer);
+    } else if (def.type === 'barcode') {
+      div.style.justifyContent = 'center';
+      div.style.alignItems = 'center';
+      const canvas = document.createElement('canvas');
+      const bData = getBarcodeData(p);
+      drawBarcodeCanvas(canvas, bData, iw, ih);
+      canvas.style.cssText = `max-width:${iw}px;max-height:${ih}px;display:block;`;
+      div.appendChild(canvas);
+    } else {
+      let text = '';
+      if (def.type === 'price') {
+        text = p.fiyat ? Number(p.fiyat).toLocaleString('tr-TR',{minimumFractionDigits:2}) + '₺' : '—';
+      } else if (def.type === 'kilo') {
+        text = kilo ? `Kilo Fiyatı : ${kilo}₺` : '';
+      } else {
+        text = prefix + (def.field ? (p[def.field]||'') : '');
+      }
+      div.style.justifyContent = align==='center'?'center':align==='right'?'flex-end':'flex-start';
+      div.style.alignItems = 'flex-start';
+      const span = document.createElement('span');
+      // Text overflow: wrap within box, clip if still too long
+      span.style.cssText = `font-size:${fs}px;font-weight:${def.bold?900:400};line-height:1.3;font-family:${def.mono?'monospace':'Arial,Helvetica,sans-serif'};text-align:${align};display:block;width:100%;overflow:hidden;word-break:break-word;white-space:pre-wrap;max-height:${ih}px;`;
+      span.textContent = text;
+      div.appendChild(span);
+      // Border/frame for custom text elements
+      if (def.type === 'custom_text' && def.hasBorder) {
+        div.style.border = `${(def.borderWidth||1)*zoom}px solid #000`;
+        div.style.padding = `${2*zoom}px`;
+      }
+    }
+ 
+    // Drag
+    div.addEventListener('mousedown', startDrag);
+    div.addEventListener('touchstart', startDragTouch, { passive: false });
+    // Click → select + open floating toolbar
+    div.addEventListener('click', e => {
+      e.stopPropagation();
+      selElId = item.id;
+      updateFloatingToolbar();
+      openQuickEdit(item.id);
+    });
+    // Double-click also opens
+    div.addEventListener('dblclick', e => { e.stopPropagation(); openQuickEdit(item.id); });
+
+    // 8 yönlü resize handles
+    if (isSelected && def.type !== 'qr' && def.type !== 'barcode') {
+      const handles = [
+        { pos:'nw', cursor:'nw-resize', top:'-7px', left:'-7px',   dx:-1, dy:-1, dw:1,  dh:1  },
+        { pos:'n',  cursor:'n-resize',  top:'-7px', left:'50%',    dx:0,  dy:-1, dw:0,  dh:1, mleft:'-8px' },
+        { pos:'ne', cursor:'ne-resize', top:'-7px', right:'-7px',  dx:1,  dy:-1, dw:1,  dh:1  },
+        { pos:'e',  cursor:'e-resize',  top:'50%',  right:'-7px',  dx:1,  dy:0,  dw:1,  dh:0, mtop:'-8px' },
+        { pos:'se', cursor:'se-resize', bottom:'-7px', right:'-7px', dx:1, dy:1, dw:1,  dh:1  },
+        { pos:'s',  cursor:'s-resize',  bottom:'-7px', left:'50%', dx:0,  dy:1,  dw:0,  dh:1, mleft:'-8px' },
+        { pos:'sw', cursor:'sw-resize', bottom:'-7px', left:'-7px', dx:-1, dy:1, dw:1,  dh:1  },
+        { pos:'w',  cursor:'w-resize',  top:'50%',  left:'-7px',   dx:-1, dy:0,  dw:1,  dh:0, mtop:'-8px' },
+      ];
+      handles.forEach(h => {
+        const rh = document.createElement('div');
+        let css = `position:absolute;width:14px;height:14px;background:#2563eb;border:2px solid white;border-radius:3px;cursor:${h.cursor};z-index:30;box-shadow:0 2px 5px rgba(0,0,0,0.25);`;
+        if (h.top)    css += `top:${h.top};`;
+        if (h.bottom) css += `bottom:${h.bottom};`;
+        if (h.left)   css += `left:${h.left};`;
+        if (h.right)  css += `right:${h.right};`;
+        if (h.mleft)  css += `margin-left:${h.mleft};`;
+        if (h.mtop)   css += `margin-top:${h.mtop};`;
+        rh.style.cssText = css;
+
+        rh.addEventListener('dblclick', e => e.stopPropagation());
+        rh.addEventListener('mousedown', e => {
+          e.preventDefault(); e.stopPropagation();
+          const startX = e.clientX, startY = e.clientY;
+          const startW = item.w, startH = item.h;
+          const startItemX = item.x, startItemY = item.y;
+          const W = getLW(), H = getLH();
+          const move = me => {
+            const rawDx = (me.clientX - startX) / (PX * zoom);
+            const rawDy = (me.clientY - startY) / (PX * zoom);
+            // Width change
+            if (h.dw) {
+              const newW = Math.max(4, startW + rawDx * h.dx);
+              if (h.dx < 0) {
+                // Moving left edge: adjust x too
+                const diff = startW - newW;
+                item.x = Math.max(0, startItemX + (startW - newW));
+                item.w = Math.min(W - item.x, newW);
+              } else {
+                item.w = Math.max(4, Math.min(W - item.x, startW + rawDx));
+              }
+            }
+            // Height change
+            if (h.dh) {
+              if (h.dy < 0) {
+                // Moving top edge: adjust y too
+                const newH = Math.max(2, startH - rawDy);
+                item.y = Math.max(0, startItemY + rawDy);
+                item.h = Math.min(H - item.y, newH);
+              } else {
+                item.h = Math.max(2, Math.min(H - item.y, startH + rawDy));
+              }
+            }
+            const saved = selElId; selElId = null; renderLabel(); selElId = saved;
+            updateSelElemPanel();
+          };
+          const up = () => { window.removeEventListener('mousemove', move); window.removeEventListener('mouseup', up); };
+          window.addEventListener('mousemove', move);
+          window.addEventListener('mouseup', up);
+        });
+        div.appendChild(rh);
+      });
+    }
+
+    paper.appendChild(div);
+  });
+ 
+  // Click on empty paper = deselect (only if no quick edit panel is open)
+  paper.addEventListener('click', () => {
+    if (_qeId) return;
+    selElId = null;
+    closeFloatingToolbar();
+  }, {once: true});
+
+  // ── LOGO ───────────────────────────────────────────────────────────────────
+  if (logoData && logoLayout) {
+    const lx = logoLayout.x * PX * zoom, ly = logoLayout.y * PX * zoom;
+    const lw = logoLayout.w * PX * zoom * logoScale, lh = logoLayout.h * PX * zoom * logoScale;
+    const logoDiv = document.createElement('div');
+    logoDiv.style.cssText = `position:absolute;left:${lx}px;top:${ly}px;width:${lw}px;height:${lh}px;cursor:move;z-index:15;overflow:hidden;`;
+    const lImg = document.createElement('img');
+    lImg.src = logoData;
+    lImg.style.cssText = `width:100%;height:100%;object-fit:contain;transform:rotate(${logoRotation}deg);transform-origin:center;pointer-events:none;`;
+    logoDiv.appendChild(lImg);
+    logoDiv.addEventListener('mousedown', e => {
+      e.preventDefault(); e.stopPropagation();
+      const sx = logoLayout.x, sy = logoLayout.y, mx = e.clientX, my = e.clientY;
+      const move = me => {
+        logoLayout.x = sx + (me.clientX - mx) / (PX * zoom);
+        logoLayout.y = sy + (me.clientY - my) / (PX * zoom);
+        renderLabel();
+      };
+      const up = () => { window.removeEventListener('mousemove', move); window.removeEventListener('mouseup', up); };
+      window.addEventListener('mousemove', move); window.addEventListener('mouseup', up);
+    });
+    paper.appendChild(logoDiv);
+  }
+ 
+  updateProductNav();
+  // --- MOBİL ÖLÇEKLENDİRME BAŞLANGICI ---
+  if (window.innerWidth < 768) {
+      const area = document.getElementById('preview-area');
+      const wrapper = document.getElementById('preview-wrapper');
+      const paper = document.getElementById('label-paper');
+      
+      if (area && wrapper && paper) {
+          const availableWidth = area.offsetWidth - 40; 
+          const currentLabelWidth = paper.offsetWidth;
+          const scale = availableWidth / currentLabelWidth;
+          
+          if (scale < 1) {
+              wrapper.style.transform = `scale(${scale})`;
+              area.style.height = (paper.offsetHeight * scale + 40) + "px";
+          } else {
+              wrapper.style.transform = "scale(1)";
+              area.style.height = "auto";
+          }
+      }
+  }
+  // --- MOBİL ÖLÇEKLENDİRME BİTİŞİ ---
+}
+ 
+// ─── DRAG ─────────────────────────────────────────────────────────────────────
+function startDrag(e) {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  e.preventDefault();
+  const id = e.currentTarget.dataset.id;
+  selElId = id;
+  const item = layout.find(l => l.id === id);
+  if (!item) return;
+  const startX = e.clientX, startY = e.clientY;
+  const startIx = item.x, startIy = item.y;
+  const W = getLW(), H = getLH();
+  const mg = getMg();
+ 
+  const move = (me) => {
+    const dx = (me.clientX - startX) / (PX * zoom);
+    const dy = (me.clientY - startY) / (PX * zoom);
+    item.x = Math.max(mg.left, Math.min(W - mg.right - item.w, startIx + dx));
+    item.y = Math.max(mg.top,  Math.min(H - mg.bottom - item.h, startIy + dy));
+    renderLabel(); updateSelPanel();
+  };
+  const up = () => { window.removeEventListener('mousemove', move); window.removeEventListener('mouseup', up); renderLabel(); updateSelPanel(); };
+  window.addEventListener('mousemove', move);
+  window.addEventListener('mouseup', up);
+  renderLabel(); updateSelPanel();
+
+}
+function startDragTouch(e) {
+  const t = e.touches[0];
+  const id = e.currentTarget.dataset.id;
+  selElId = id;
+  const item = layout.find(l => l.id === id);
+  if (!item) return;
+  const startX = t.clientX, startY = t.clientY;
+  const startIx = item.x, startIy = item.y;
+  const W = getLW(), H = getLH();
+  const mg = getMg();
+  const move = (te) => {
+    const tt = te.touches[0];
+    const dx = (tt.clientX - startX) / (PX * zoom);
+    const dy = (tt.clientY - startY) / (PX * zoom);
+    item.x = Math.max(mg.left, Math.min(W - mg.right - item.w, startIx + dx));
+    item.y = Math.max(mg.top,  Math.min(H - mg.bottom - item.h, startIy + dy));
+    renderLabel();
+  };
+  const up = () => { window.removeEventListener('touchmove', move); window.removeEventListener('touchend', up); };
+  window.addEventListener('touchmove', move, { passive: true });
+  window.addEventListener('touchend', up);
+  renderLabel();
+}
+ 
+// ─── INLINE EDIT ──────────────────────────────────────────────────────────────
+function startInlineEdit(e) {
+  e.stopPropagation();
+  const id = e.currentTarget.dataset.id;
+  const def = ELEM_DEFS.find(d => d.id === id);
+  // QR and barcode types can't be inline edited
+  if (!def || def.type === 'qr' || def.type === 'barcode') {
+    if (def && def.type === 'qr') showToast('QR kod içeriği için sol paneldeki QR Kod sekmesini kullanın');
+    if (def && def.type === 'barcode') showToast('Barkod verisi için sol paneli kullanın');
+    return;
+  }
+  const item = layout.find(l => l.id === id);
+  if (!item) return;
+
+  const paper = document.getElementById('label-paper');
+  const iw = item.w * PX * zoom, ih = item.h * PX * zoom;
+  const fs = (fontSizes[id] || 8) * zoom;
+  const prefix = prefixes[id] !== undefined ? prefixes[id] : (def.prefix||'');
+  const p = getCur();
+  const currentVal = def.field ? (p[def.field]||'') : (def.type==='custom_text' ? prefix : '');
+
+  const existing = paper.querySelector(`[data-id="${id}"]`);
+  if (existing) existing.remove();
+
+  const editDiv = document.createElement('div');
+  editDiv.className = 'label-elem selected editing-inline';
+  editDiv.dataset.id = id;
+  // CRITICAL: position:absolute so it overlays on the label paper correctly
+  const minH = Math.max(ih, 20);
+  editDiv.style.cssText = `position:absolute;left:${item.x*PX*zoom}px;top:${item.y*PX*zoom}px;width:${Math.max(iw,40)}px;height:${minH}px;flex-direction:column;z-index:50;background:rgba(255,255,255,0.97);border:2px solid #3b82f6;border-radius:4px;overflow:visible;`;
+
+  if (def.type === 'custom_text') {
+    // Single input for custom text content
+    const inp = document.createElement('input');
+    inp.className = 'inline-edit-input';
+    inp.value = prefix;
+    inp.placeholder = 'Yazı içeriği...';
+    const inputFs = Math.max(fs, 11 * zoom);
+    inp.style.cssText = `font-size:${inputFs}px;font-weight:${def.bold?900:400};height:100%;min-height:28px;width:100%;padding:4px 6px;border:none;outline:none;background:transparent;font-family:Arial,sans-serif;`;
+    const commit = () => {
+      prefixes[id] = inp.value;
+      if (selElId === id) {} // keep selected
+      renderLabel(); renderFontEditor(); renderExtraFields();
+    };
+    inp.addEventListener('keydown', ev => { if (ev.key==='Enter'||ev.key==='Escape') { commit(); inp.blur(); } });
+    inp.addEventListener('blur', () => setTimeout(commit, 150));
+    editDiv.appendChild(inp);
+    paper.appendChild(editDiv);
+    setTimeout(() => { inp.focus(); inp.select(); }, 30);
+  } else {
+    // Two-line: prefix + value
+    const prefixInp = document.createElement('input');
+    prefixInp.className = 'inline-edit-input';
+    prefixInp.value = prefix;
+    prefixInp.placeholder = 'Ön metin...';
+    const smallFs = Math.max(fs * 0.75, 9 * zoom);
+    prefixInp.style.cssText = `font-size:${smallFs}px;height:38%;min-height:18px;width:100%;padding:2px 6px;border:none;border-bottom:1px solid #93c5fd;outline:none;background:rgba(219,234,254,0.9);font-family:Arial,sans-serif;`;
+
+    const valInp = document.createElement('input');
+    valInp.className = 'inline-edit-input';
+    valInp.value = currentVal;
+    valInp.placeholder = def.label + '...';
+    const inputFs = Math.max(fs, 10 * zoom);
+    valInp.style.cssText = `font-size:${inputFs}px;font-weight:${def.bold?900:400};height:62%;min-height:22px;width:100%;padding:2px 6px;border:none;outline:none;background:transparent;font-family:Arial,sans-serif;`;
+
+    const commit = () => {
+      prefixes[id] = prefixInp.value;
+      if (def.field) products[selProd][def.field] = valInp.value;
+      syncFormFields(); renderLabel(); renderFontEditor();
+    };
+    [prefixInp, valInp].forEach(inp => {
+      inp.addEventListener('keydown', ev => { if (ev.key==='Enter'||ev.key==='Escape') { commit(); inp.blur(); } });
+      inp.addEventListener('blur', () => setTimeout(commit, 150));
+    });
+    editDiv.appendChild(prefixInp);
+    editDiv.appendChild(valInp);
+    paper.appendChild(editDiv);
+    setTimeout(() => { valInp.focus(); valInp.select(); }, 30);
+  }
+}
+ 
+// ─── QUICK EDIT PANEL ────────────────────────────────────────────────────────
+let _qeId = null;
+
+function openQuickEdit(id) {
+  const def = ELEM_DEFS.find(d => d.id === id);
+  if (!def) return;
+  if (def.type === 'qr')      { showToast('QR kod içeriği için sol paneli kullanın'); return; }
+  if (def.type === 'barcode') { showToast('Barkod verisi için sol paneli kullanın'); return; }
+
+  _qeId = id;
+  selElId = id;
+  const p = getCur();
+  const prefix = prefixes[id] !== undefined ? prefixes[id] : (def.prefix || '');
+  const value = def.field ? (p[def.field] || '') : (def.type === 'custom_text' ? prefix : '');
+  const label = customLabels[id] || def.label;
+
+  document.getElementById('qe-title').textContent = '✏️ ' + label;
+  const pfxRow = document.getElementById('qe-prefix-row');
+  const qePfx  = document.getElementById('qe-prefix');
+  const qeVal  = document.getElementById('qe-value');
+
+  if (def.type === 'custom_text') {
+    pfxRow.style.display = 'none';
+    qeVal.value = prefix;
+    qeVal.placeholder = 'Yazı içeriği...';
+  } else if (def.prefix !== undefined) {
+    pfxRow.style.display = 'block';
+    qePfx.value = prefix;
+    qeVal.value = value;
+    qeVal.placeholder = def.label + '...';
+  } else {
+    pfxRow.style.display = 'none';
+    qeVal.value = value;
+    qeVal.placeholder = def.label + '...';
+  }
+
+  const panel = document.getElementById('quick-edit-panel');
+  panel.style.display = 'block';
+  panel.style.animation = 'none';
+  requestAnimationFrame(() => { panel.style.animation = 'qeSlide 0.18s ease'; });
+  setTimeout(() => { qeVal.focus(); qeVal.select(); }, 40);
+  panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  updateSelPanel();
+}
+
+function applyQuickEditLive() {
+  if (!_qeId) return;
+  const def = ELEM_DEFS.find(d => d.id === _qeId);
+  if (!def) return;
+  const qePfx = document.getElementById('qe-prefix');
+  const qeVal = document.getElementById('qe-value');
+  if (def.type === 'custom_text') {
+    prefixes[_qeId] = qeVal.value;
+  } else {
+    if (def.prefix !== undefined && qePfx) prefixes[_qeId] = qePfx.value;
+    if (def.field) products[selProd][def.field] = qeVal.value;
+  }
+  syncFormFields();
+  // Render without disrupting _qeId
+  const saved = _qeId;
+  _qeId = null;
+  renderLabel();
+  renderFontEditor();
+  _qeId = saved;
+  selElId = saved;
+}
+
+function applyQuickEdit() { applyQuickEditLive(); }
+
+function closeQuickEdit() {
+  _qeId = null;
+  selElId = null;
+  const panel = document.getElementById('quick-edit-panel');
+  if (panel) panel.style.display = 'none';
+  updateSelPanel();
+  renderLabel();
+}
+
+// ─── PRODUCT NAV ──────────────────────────────────────────────────────────────
+function updateProductNav() {
+  const total = products.length;
+  const cur = getCur();
+  const name = cur.urunAdi || `Ürün #${selProd+1}`;
+  ['nav-count','nav-count2'].forEach(id => { const el=document.getElementById(id); if(el) el.textContent=`${selProd+1} / ${total} ürün`; });
+  ['nav-name','nav-name2'].forEach(id => { const el=document.getElementById(id); if(el) el.textContent=name; });
+  const np = document.getElementById('nav-prev'); if(np) np.disabled = selProd===0;
+  const nn = document.getElementById('nav-next'); if(nn) nn.disabled = selProd===total-1;
+  const gab = document.getElementById('global-apply-btn');
+  if (gab) gab.textContent = `✅ Tüm Ürünlere Uygula (${total} ürün)`;
+}
+function prevProduct() { if (selProd > 0) { selProd--; syncFormFields(); renderLabel(); } }
+function nextProduct() { if (selProd < products.length-1) { selProd++; syncFormFields(); renderLabel(); } }
+ 
+// ─── GLOBAL DATE APPLY ────────────────────────────────────────────────────────
+function applyGlobalDates() {
+  const fdt = document.getElementById('global-fdt')?.value?.trim();
+  const et  = document.getElementById('global-et')?.value?.trim();
+  if (!fdt && !et) {
+    showToast('Lütfen en az bir tarih girin!');
+    return;
+  }
+  let count = 0;
+  products.forEach(p => {
+    if (fdt) p.fiyatDegisimTarihi = fdt;
+    if (et)  p.etiketTarihi = et;
+    count++;
+  });
+  syncFormFields();
+  renderLabel();
+  // Show result
+  const res = document.getElementById('global-date-result');
+  if (res) {
+    res.style.display = 'block';
+    res.textContent = `✅ ${count} ürüne uygulandı!`;
+    setTimeout(() => { res.style.display='none'; }, 3000);
+  }
+  showToast(`${count} ürüne tarih uygulandı!`);
+}
+ 
+function syncFormFields() {
+  const p = getCur();
+  const map = { 'f-urunAdi':'urunAdi','f-altBilgi':'altBilgi','f-barkod':'barkod','f-stt':'stt','f-partiNo':'partiNo','f-saklama':'saklama' };
+  Object.entries(map).forEach(([elId, key]) => { const el=document.getElementById(elId); if(el) el.value=p[key]||''; });
+  // Update QR auto preview
+  const qd = getQrData();
+  const qprev = document.getElementById('qr-auto-preview');
+  if (qprev) qprev.textContent = qd || '—';
+  renderExtraFields();
+}
+function updateCurProduct() {
+  const p = products[selProd];
+  const map = { 'f-urunAdi':'urunAdi','f-altBilgi':'altBilgi','f-barkod':'barkod','f-stt':'stt','f-partiNo':'partiNo','f-saklama':'saklama' };
+  Object.entries(map).forEach(([elId, key]) => { const el=document.getElementById(elId); if(el) p[key]=el.value; });
+  // Auto update QR preview
+  const qd = getQrData();
+  const qprev = document.getElementById('qr-auto-preview');
+  if (qprev) qprev.textContent = qd || '—';
+  qrCache = {};
+  renderLabel();
+}
+function addProduct() {
+  products.push({ urunAdi:'', altBilgi:'', barkod:'', stt:'', partiNo:'', saklama:'', barkodBaslik:'KOLİ BARKODU', qrMetin:'', extraFields:[] });
+  selProd = products.length - 1;
+  syncFormFields();
+  renderLabel();
+  showToast('Yeni ürün eklendi!');
+}
+function deleteProduct() {
+  if (products.length <= 1) { showToast('En az 1 ürün olmalı!'); return; }
+  products.splice(selProd, 1);
+  selProd = Math.max(0, selProd-1);
+  syncFormFields();
+  renderLabel();
+}
+
+// ─── EXTRA FIELDS — layout tabanlı gerçek eleman sistemi ──────────────────────
+let _efCounter = 0;
+
+// ─── MİNİ YAZI EDİTÖRÜ STATE ─────────────────────────────────────────────────
+let newTextSize  = 10;
+let newTextBold  = false;
+let newTextAlign = 'center';
+
+function updateNewTextPreview() {
+  document.getElementById('new-text-size-val').textContent = newTextSize + 'pt';
+  const prev = document.getElementById('new-text-preview');
+  const val  = document.getElementById('new-text-input').value || 'Yazı önizlemesi burada görünür';
+  prev.style.fontSize   = (newTextSize * 2.5) + 'px';
+  prev.style.fontWeight = newTextBold ? '900' : '400';
+  prev.style.textAlign  = newTextAlign;
+  prev.style.color      = document.getElementById('new-text-input').value ? '#111' : 'var(--gray-400)';
+  prev.textContent      = val;
+}
+
+function setNewAlign(btn) {
+  ['new-align-left','new-align-center','new-align-right'].forEach(id=>{
+    document.getElementById(id)?.classList.remove('active');
+  });
+  btn.classList.add('active');
+  updateNewTextPreview();
+}
+
+function addTextFromEditor() {
+  const input = document.getElementById('new-text-input');
+  const text = (input.value || '').trim();
+  if (!text) { showToast('Lütfen bir yazı girin'); input.focus(); return; }
+
+  const id = 'ef_' + (++_efCounter) + '_' + Date.now();
+  const W = getLW(), H = getLH();
+
+  ELEM_DEFS.push({
+    id, type: 'custom_text', label: 'Ek Yazı',
+    field: null, bold: newTextBold, defaultAlign: newTextAlign, prefix: text
+  });
+  layout.unshift({ id, x: 0, y: 0, w: W, h: 10 });
+  fontSizes[id] = newTextSize;
+  aligns[id]    = newTextAlign;
+  prefixes[id]  = text;
+
+  // Reset input
+  input.value = '';
+  updateNewTextPreview();
+  renderLabel();
+  renderFontEditor();
+  renderExtraFields();
+  selElId = id;
+  updateSelPanel();
+  showToast('✅ Yazı eklendi! Etikette sürükleyerek taşıyabilirsiniz.');
+}
+
+// Update preview when typing
+document.addEventListener('DOMContentLoaded', () => {
+  const inp = document.getElementById('new-text-input');
+  if (inp) inp.addEventListener('input', updateNewTextPreview);
+});
+
+// ─── LOGO ─────────────────────────────────────────────────────────────────────
+let logoData = null;
+let logoRotation = 0;
+let logoScale = 1.0;
+let logoLayout = null;
+
+function handleLogoUpload(event) {
+  const file = event?.target?.files?.[0];
+  if (!file) return;
+  if (!file.type.startsWith('image/')) { showToast('Lütfen PNG veya JPG dosyası seçin.'); return; }
+  const reader = new FileReader();
+  reader.onload = e => {
+    logoData = e.target.result;
+    logoRotation = 0;
+    logoScale = 1.0;
+    if (!layout || layout.length === 0) buildLayout();
+    const W = getLW(), H = getLH();
+    const logoW = W * 0.6;
+    const logoH = H * 0.15;
+    logoLayout = { x: (W - logoW) / 2, y: H * 0.01, w: logoW, h: logoH };
+    renderLabel();
+    renderLogoControls();
+    showToast('✅ Logo eklendi! Etikette sürükleyerek taşıyabilirsiniz.');
+  };
+  reader.onerror = () => showToast('Dosya okunamadı. Lütfen tekrar deneyin.');
+  reader.readAsDataURL(file);
+  setTimeout(() => { event.target.value = ''; }, 500);
+}
+
+function removeLogoKoli() {
+  logoData = null; logoLayout = null; logoRotation = 0; logoScale = 1.0;
+  renderLabel();
+  renderLogoControls();
+  showToast('Logo kaldırıldı.');
+}
+
+function rotateLogoKoli(deg) {
+  if (!logoData) return;
+  logoRotation = ((logoRotation + deg) % 360 + 360) % 360;
+  renderLabel();
+}
+
+function scaleLogoKoli(delta) {
+  if (!logoData) return;
+  logoScale = Math.max(0.1, Math.min(5, logoScale + delta));
+  const sv = document.getElementById('koli-logo-scale-val');
+  if (sv) sv.textContent = Math.round(logoScale * 100) + '%';
+  renderLabel();
+}
+
+function renderLogoControls() {
+  const panel = document.getElementById('koli-logo-controls');
+  if (!panel) return;
+  panel.style.display = logoData ? 'block' : 'none';
+  const sv = document.getElementById('koli-logo-scale-val');
+  if (sv) sv.textContent = Math.round(logoScale * 100) + '%';
+}
+
+function addExtraField() {
+  const id = 'ef_' + (++_efCounter) + '_' + Date.now();
+  const W = getLW(), H = getLH();
+  const text = 'YENİ YAZI YAZINIZ';
+
+  // Add to ELEM_DEFS as custom_text type
+  ELEM_DEFS.push({
+    id, type: 'custom_text', label: 'Ek Yazı',
+    field: null, bold: false, defaultAlign: 'center', prefix: text,
+    hasBorder: false, borderWidth: 1
+  });
+
+  // Place at TOP of label so it's immediately visible
+  layout.unshift({ id, x: 0, y: 0, w: W, h: 8 });
+
+  fontSizes[id] = 10;
+  aligns[id] = 'center';
+  prefixes[id] = text;
+
+  selElId = id;
+  renderLabel();
+  renderFontEditor();
+  updateSelPanel();
+  showToast('✅ Yazı eklendi! Çift tıklayarak düzenleyebilirsiniz.');
+}
+
+function removeExtraField(idx) {
+  // Remove by index from extraFields array (legacy - not used anymore)
+  const p = getCur();
+  if (!p.extraFields) return;
+  p.extraFields.splice(idx, 1);
+  renderExtraFields();
+  renderLabel();
+}
+
+function removeLayoutElem(id) {
+  ELEM_DEFS = ELEM_DEFS.filter(d => d.id !== id);
+  layout = layout.filter(l => l.id !== id);
+  delete fontSizes[id];
+  delete aligns[id];
+  delete prefixes[id];
+  delete customLabels[id];
+  if (selElId === id) selElId = null;
+  renderLabel();
+  renderFontEditor();
+  updateSelPanel();
+}
+
+function updateExtraField(idx, key, val) {
+  const p = getCur();
+  if (!p.extraFields || !p.extraFields[idx]) return;
+  p.extraFields[idx][key] = val;
+  renderLabel();
+}
+
+function renderExtraFields() {
+  const container = document.getElementById('extra-fields-list');
+  if (!container) return;
+  const customElems = ELEM_DEFS.filter(d => d.type === 'custom_text');
+  container.innerHTML = '';
+
+  if (customElems.length === 0) {
+    container.innerHTML = '<div style="color:var(--gray-400);font-size:13px;padding:8px 0;text-align:center">Henüz ek yazı eklenmedi</div>';
+    return;
+  }
+
+  customElems.forEach(def => {
+    const fs = fontSizes[def.id] || 10;
+    const isBold = def.bold || false;
+    const card = document.createElement('div');
+    card.style.cssText = 'background:white;border:1.5px solid var(--green-light);border-radius:10px;padding:11px 12px;margin-bottom:10px;';
+    card.innerHTML = `
+      <!-- Yazı içeriği değiştirme -->
+      <div style="display:flex;gap:8px;margin-bottom:10px;align-items:center">
+        <input class="form-input" value="${(prefixes[def.id]||'').replace(/"/g,'&quot;')}"
+          placeholder="Yazı içeriği..."
+          oninput="prefixes['${def.id}']=this.value;renderLabel()"
+          style="flex:1;font-size:14px;padding:8px 11px;font-weight:${isBold?900:400}"/>
+        <button onclick="removeLayoutElem('${def.id}')" title="Sil"
+          style="background:#dc2626;color:white;border:none;border-radius:8px;width:34px;height:34px;font-size:16px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center">×</button>
+      </div>
+      <!-- Format kontrolleri -->
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+        <span style="font-size:11px;font-weight:700;color:var(--gray-500)">Punto:</span>
+        <button class="size-btn" onclick="fontSizes['${def.id}']=Math.max(6,(fontSizes['${def.id}']||10)-1);renderLabel();renderExtraFields()">−</button>
+        <span style="min-width:32px;text-align:center;font-weight:800;font-size:13px;color:var(--green-dark)">${fs}pt</span>
+        <button class="size-btn" onclick="fontSizes['${def.id}']=Math.min(72,(fontSizes['${def.id}']||10)+1);renderLabel();renderExtraFields()">+</button>
+        <button onclick="toggleEfBold('${def.id}',this)" class="align-btn ${isBold?'active':''}" style="font-weight:900;font-size:13px;padding:3px 9px" title="Kalın">B</button>
+        <button class="align-btn ${(aligns[def.id]||'center')==='left'?'active':''}"   onclick="aligns['${def.id}']='left';renderLabel();renderExtraFields()"   title="Sola">◀</button>
+        <button class="align-btn ${(aligns[def.id]||'center')==='center'?'active':''}" onclick="aligns['${def.id}']='center';renderLabel();renderExtraFields()" title="Ortala">●</button>
+        <button class="align-btn ${(aligns[def.id]||'center')==='right'?'active':''}"  onclick="aligns['${def.id}']='right';renderLabel();renderExtraFields()"  title="Sağa">▶</button>
+        <button onclick="selElId='${def.id}';updateSelPanel();renderLabel()" class="align-btn" style="font-size:11px;padding:3px 8px" title="Seç">Seç</button>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+
+  // Tüm ek yazıları kaldır butonu
+  if (customElems.length > 0) {
+    const removeAll = document.createElement('button');
+    removeAll.className = 'btn btn-full';
+    removeAll.style.cssText = 'background:#6b7280;color:white;font-size:13px;padding:9px;margin-top:4px';
+    removeAll.textContent = '🗑️ Tüm Ek Yazıları Kaldır';
+    removeAll.onclick = () => {
+      if (!confirm('Tüm ek yazılar silinsin mi?')) return;
+      [...customElems].forEach(d => removeLayoutElem(d.id));
+    };
+    container.appendChild(removeAll);
+  }
+}
+
+function toggleEfBold(id, btn) {
+  const def = ELEM_DEFS.find(d => d.id === id);
+  if (!def) return;
+  def.bold = !def.bold;
+  btn.classList.toggle('active', def.bold);
+  renderLabel();
+}
+ 
+// ─── PRESETS ──────────────────────────────────────────────────────────────────
+function selectPreset(id) {
+  presetId = id;
+  document.querySelectorAll('.preset-card').forEach(c => c.classList.remove('selected'));
+  document.getElementById('preset-'+id).classList.add('selected');
+  document.getElementById('custom-size').style.display = id==='custom'?'block':'none';
+  buildLayout();
+}
+function onCustomSize() { buildLayout(); }
+ 
+// ─── DATE HELPER ─────────────────────────────────────────────────────────────
+function formatDateTR(isoDate) {
+  if (!isoDate) return '';
+  const [y,m,d] = isoDate.split('-');
+  return `${d}.${m}.${y}`;
+}
+ 
+// ─── SELECTED ELEMENT PANEL ──────────────────────────────────────────────────
+function hideSelectedElem() {
+  if (!selElId) return;
+  const def = ELEM_DEFS.find(e => e.id === selElId);
+  if (def && (def.type === 'qr' || def.type === 'barcode')) {
+    showToast('QR ve barkod alanları gizlenemez'); return;
+  }
+  layout = layout.filter(l => l.id !== selElId);
+  const name = def ? (customLabels[selElId] || def.label) : selElId;
+  selElId = null;
+  if (_qeId) { _qeId = null; }
+  closeFloatingToolbar();
+  renderLabel();
+  showToast(`"${name}" gizlendi. Düzeni Sıfırla ile geri getirebilirsiniz.`);
+}
+
+// ─── FLOATING TOOLBAR ─────────────────────────────────────────────────────────
+function updateSelPanel() { updateFloatingToolbar(); } // alias
+
+function updateFloatingToolbar() {
+  const toolbar = document.getElementById('floating-toolbar');
+  if (!toolbar) return;
+
+  if (!selElId) { toolbar.style.display = 'none'; return; }
+
+  const def  = ELEM_DEFS.find(e => e.id === selElId);
+  const item = layout.find(l => l.id === selElId);
+  if (!def || !item) { toolbar.style.display = 'none'; return; }
+
+  // Position toolbar above the selected element on the label
+  const PX_   = 3.7795275591;
+  const zoom_ = parseFloat(document.getElementById('label-paper')?.style.width) > 0
+    ? parseFloat(document.getElementById('label-paper').style.width) / (getLW() * PX_)
+    : 1;
+
+  toolbar.style.display = 'block';
+
+  // Name
+  document.getElementById('ft-elem-name').textContent = customLabels[selElId] || def.label;
+
+  // Font size
+  const fs = fontSizes[selElId] || 6;
+  document.getElementById('ft-fs').textContent = fs + 'pt';
+
+  // Bold button
+  const boldBtn = document.getElementById('ft-bold-btn');
+  if (boldBtn) boldBtn.classList.toggle('active', !!(def.bold));
+
+  // Alignment
+  const align = aligns[selElId] || def.defaultAlign || 'center';
+  ['left','center','right'].forEach(a => {
+    document.getElementById('ft-align-'+a)?.classList.toggle('active', align === a);
+  });
+
+  // Text edit row
+  const ftTextRow  = document.getElementById('ft-text-row');
+  const ftPfxRow   = document.getElementById('ft-prefix-row');
+  const ftPfxInp   = document.getElementById('ft-prefix-inp');
+  const ftValInp   = document.getElementById('ft-value-inp');
+
+  if (def.type === 'qr' || def.type === 'barcode') {
+    ftTextRow.style.display = 'none';
+    document.getElementById('ft-hide-btn').style.display = 'none';
+  } else {
+    document.getElementById('ft-hide-btn').style.display = '';
+    ftTextRow.style.display = 'block';
+    const p      = getCur();
+    const prefix = prefixes[selElId] !== undefined ? prefixes[selElId] : (def.prefix || '');
+    const value  = def.field ? (p[def.field] || '') : (def.type === 'custom_text' ? prefix : '');
+
+    if (def.type === 'custom_text') {
+      ftPfxRow.style.display = 'none';
+      ftValInp.value = prefix;
+      ftValInp.placeholder = 'Yazı içeriği...';
+    } else if (def.prefix !== undefined) {
+      ftPfxRow.style.display = 'block';
+      ftPfxInp.value = prefix;
+      ftValInp.value = value;
+      ftValInp.placeholder = def.label + '...';
+    } else {
+      ftPfxRow.style.display = 'none';
+      ftValInp.value = value;
+      ftValInp.placeholder = def.label + '...';
+    }
+  }
+
+  // Re-animate
+  toolbar.style.animation = 'none';
+  requestAnimationFrame(() => { toolbar.style.animation = 'ftSlide 0.15s ease'; });
+
+  // Also update sel-elem-panel (size/align display)
+  updateSelElemPanel();
+}
+
+function updateSelElemPanel() {
+  const panel = document.getElementById('sel-elem-panel');
+  if (!panel) return;
+  if (!selElId) { panel.style.display = 'none'; return; }
+  const item = layout.find(l => l.id === selElId);
+  const def  = ELEM_DEFS.find(e => e.id === selElId);
+  if (!item || !def) { panel.style.display = 'none'; return; }
+  panel.style.display = 'block';
+  document.getElementById('sel-elem-name').textContent = customLabels[selElId] || def.label;
+  document.getElementById('sel-w').textContent  = Math.round(item.w * 10) / 10 + ' mm';
+  document.getElementById('sel-h').textContent  = Math.round(item.h * 10) / 10 + ' mm';
+  document.getElementById('sel-fs').textContent = (fontSizes[selElId] || 6) + ' pt';
+  const align = aligns[selElId] || def.defaultAlign || 'center';
+  ['left','center','right'].forEach(a => {
+    document.getElementById('sel-align-' + a)?.classList.toggle('active', align === a);
+  });
+}
+
+function closeFloatingToolbar() {
+  selElId = null;
+  const toolbar = document.getElementById('floating-toolbar');
+  if (toolbar) toolbar.style.display = 'none';
+  const panel = document.getElementById('sel-elem-panel');
+  if (panel) panel.style.display = 'none';
+  renderLabel();
+}
+
+function applyFloatingEdit() {
+  if (!selElId) return;
+  const def    = ELEM_DEFS.find(d => d.id === selElId);
+  if (!def)    return;
+  const ftPfxInp = document.getElementById('ft-prefix-inp');
+  const ftValInp = document.getElementById('ft-value-inp');
+
+  if (def.type === 'custom_text') {
+    prefixes[selElId] = ftValInp.value;
+  } else {
+    if (def.prefix !== undefined && ftPfxInp) prefixes[selElId] = ftPfxInp.value;
+    if (def.field) products[selProd][def.field] = ftValInp.value;
+  }
+  syncFormFields();
+  const saved = selElId;
+  selElId = null;
+  renderLabel();
+  selElId = saved;
+  // Update just the font size display (don't re-render inputs — cursor resets)
+  document.getElementById('ft-fs').textContent = (fontSizes[selElId] || 6) + 'pt';
+}
+
+function toggleSelBold() {
+  if (!selElId) return;
+  const def = ELEM_DEFS.find(d => d.id === selElId);
+  if (!def) return;
+  def.bold = !def.bold;
+  document.getElementById('ft-bold-btn')?.classList.toggle('active', def.bold);
+  renderExtraFields();
+  const saved = selElId;
+  selElId = null; renderLabel(); selElId = saved;
+}
+
+// Redirect old sel-panel references (applySelPanelEdit used by old Enter handler)
+function applySelPanelEdit() { applyFloatingEdit(); }
+
+// Keep openQuickEdit working — route to floating toolbar
+function openQuickEdit(id) {
+  const def = ELEM_DEFS.find(d => d.id === id);
+  if (!def) return;
+  if (def.type === 'qr')      { showToast('QR kod içeriği için sol paneli kullanın'); return; }
+  if (def.type === 'barcode') { showToast('Barkod verisi için sol paneli kullanın'); return; }
+  selElId = id;
+  _qeId   = id;
+  updateFloatingToolbar();
+  // Focus value input
+  setTimeout(() => {
+    const inp = document.getElementById('ft-value-inp');
+    if (inp) { inp.focus(); inp.select(); }
+  }, 50);
+}
+
+function applyQuickEdit()     { applyFloatingEdit(); }
+function applyQuickEditLive() { applyFloatingEdit(); }
+function closeQuickEdit()     { _qeId = null; closeFloatingToolbar(); }
+ 
+function resizeQrElem(dim, delta) {
+  const item = layout.find(l=>l.id==='qr');
+  if (!item) return;
+  const W=getLW(), H=getLH();
+  if (dim==='w') item.w = Math.max(5, Math.min(W, item.w+delta));
+  if (dim==='h') item.h = Math.max(5, Math.min(H, item.h+delta));
+  qrCache={};
+  renderLabel();
+  updateEanSizeDisplay();
+}
+ 
+function updateEanSizeDisplay() {
+  const item = layout.find(l=>l.id==='qr');
+  if (!item) return;
+  const wEl=document.getElementById('ean-w-val'), hEl=document.getElementById('ean-h-val');
+  if (wEl) wEl.textContent = Math.round(item.w*10)/10+' mm';
+  if (hEl) hEl.textContent = Math.round(item.h*10)/10+' mm';
+}
+ 
+function changeEanFontSize(delta) { setEanFontSize((fontSizes['qr']||6)+delta); }
+function setEanFontSize(v) {
+  v = Math.max(4, Math.min(24, v));
+  fontSizes['qr'] = v;
+  const el=document.getElementById('ean-fs-val'); if(el) el.textContent=v+'pt';
+  const rng=document.getElementById('ean-fs-range'); if(rng) rng.value=v;
+  qrCache={}; renderLabel();
+  // Refresh EAN preview
+  const c=document.getElementById('ean13-preview-canvas');
+  if(c) { const p=getCur(); drawEAN13canvas(c,getEAN13Number(p),280,Math.max(40,v*6)); }
+}
+ 
+function resizeElem(dim, delta) {
+  if (!selElId) return;
+  const item = layout.find(l=>l.id===selElId);
+  if (!item) return;
+  const W=getLW(), H=getLH();
+  if (dim==='w') item.w = Math.max(2, Math.min(W, item.w+delta));
+  if (dim==='h') item.h = Math.max(1, Math.min(H, item.h+delta));
+  const saved = selElId; selElId = null; renderLabel(); selElId = saved;
+  updateSelElemPanel();
+}
+ 
+function changeFontSizeSelected(delta) {
+  if (!selElId) return;
+  setFontSize(selElId, (fontSizes[selElId]||6)+delta);
+  const fs = fontSizes[selElId] || 6;
+  const ftFs = document.getElementById('ft-fs');
+  const selFs = document.getElementById('sel-fs');
+  if (ftFs) ftFs.textContent = fs + 'pt';
+  if (selFs) selFs.textContent = fs + ' pt';
+  const saved = selElId; selElId = null; renderLabel(); selElId = saved;
+}
+
+function setAlignSelected(v) {
+  if (!selElId) return;
+  setAlign(selElId, v);
+  updateSelElemPanel();
+  const saved = selElId; selElId = null; renderLabel(); selElId = saved;
+}
+ 
+// ─── ZOOM ─────────────────────────────────────────────────────────────────────
+function changeZoom(delta) { setZoom(Math.max(0.3, Math.min(3, zoom + delta))); }
+function setZoom(v) { zoom = v; document.getElementById('zoom-val').textContent = Math.round(v*100)+'%'; qrCache={}; renderLabel(); }
+ 
+// ─── FONT EDITOR ─────────────────────────────────────────────────────────────
+function addCustomTextElem() {
+  const id = 'custom_txt_' + Date.now();
+  // Prompt for text content
+  const text = window.prompt('Yazı içeriğini girin:', 'Serbest Metin') || 'Serbest Metin';
+  ELEM_DEFS.push({ id: id, type: 'custom_text', label: 'Özel Yazı', field: null, bold: false, defaultAlign: 'center', prefix: text, hasBorder: false, borderWidth: 1 });
+  fontSizes[id] = 12;
+  aligns[id] = 'center';
+  prefixes[id] = text;
+  // Place in a visible area
+  const W = getLW(), H = getLH();
+  layout.push({ id: id, x: W*0.1, y: H*0.1, w: W*0.8, h: H*0.08 });
+  renderFontEditor();
+  renderLabel();
+  showToast('Özel yazı eklendi! Sürükleyerek konumlandırın.');
+}
+
+function removeCustomTextElem(id) {
+  ELEM_DEFS = ELEM_DEFS.filter(d => d.id !== id);
+  layout = layout.filter(l => l.id !== id);
+  delete fontSizes[id];
+  delete aligns[id];
+  delete prefixes[id];
+  delete customLabels[id];
+  renderFontEditor();
+  renderLabel();
+}
+
+function renderFontEditor() {
+  const container = document.getElementById('font-editor');
+  if (!container) return;
+  const p = getCur();
+  container.innerHTML = '';
+  ELEM_DEFS.forEach(def => {
+    const fs = fontSizes[def.id] || 6;
+    const align = aligns[def.id] || def.defaultAlign;
+    const prefix = prefixes[def.id] !== undefined ? prefixes[def.id] : (def.prefix||'');
+    const label = customLabels[def.id] || def.label;
+    let previewText = def.type==='price' ? `${Number(p.fiyat||0).toLocaleString('tr-TR',{minimumFractionDigits:2})}₺`
+      : def.type==='kilo' ? `Kilo Fiyatı : ${getKilo(p)||'—'}₺`
+      : `${prefix}${def.field?(p[def.field]||def.label):''}`;
+ 
+    const isCustom = def.id.startsWith('custom_txt_');
+    const row = document.createElement('div');
+    row.className = 'font-row';
+    row.innerHTML = `
+      <div class="font-row-title" title="Başlığa tıklayarak düzenleyin">
+        <input value="${label}" onchange="customLabels['${def.id}']=this.value;renderFontEditor()" style="font-weight:800;font-size:15px;" title="Başlık adını değiştirin"/>
+        ${isCustom ? `<button onclick="removeCustomTextElem('${def.id}')" style="background:var(--red);color:white;border:none;border-radius:4px;padding:2px 6px;font-size:12px;cursor:pointer;margin-left:8px">Sil</button>` : ''}
+      </div>
+      <div class="font-controls">
+        <div class="font-size-ctrl">
+          <span style="font-size:14px;font-weight:700;color:var(--gray-600)">Punto:</span>
+          <button class="size-btn" onclick="changeFontSize('${def.id}', -1)">−</button>
+          <div class="size-val">${fs}pt</div>
+          <button class="size-btn" onclick="changeFontSize('${def.id}', 1)">+</button>
+          <input type="range" min="4" max="48" value="${fs}" oninput="setFontSize('${def.id}',this.value)" style="width:80px;accent-color:var(--green)"/>
+        </div>
+        <div class="align-btns">
+          <button class="align-btn ${align==='left'?'active':''}" onclick="setAlign('${def.id}','left')" title="Sola">◀</button>
+          <button class="align-btn ${align==='center'?'active':''}" onclick="setAlign('${def.id}','center')" title="Ortala">●</button>
+          <button class="align-btn ${align==='right'?'active':''}" onclick="setAlign('${def.id}','right')" title="Sağa">▶</button>
+        </div>
+      </div>
+      ${def.prefix!==undefined || isCustom ? `
+      <div class="prefix-edit">
+        <span class="prefix-label">${isCustom ? 'Metin İçeriği:' : 'Ön Metin:'}</span>
+        <input class="prefix-input" value="${prefix.replace(/"/g,'&quot;')}" placeholder="${isCustom ? 'Yazılacak metin...' : 'Ön metin...'}" onchange="prefixes['${def.id}']=this.value;renderFontEditor();renderLabel()"/>
+      </div>
+      ${isCustom ? `
+      <div style="margin-top:8px;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+        <label style="display:flex;align-items:center;gap:6px;font-size:14px;cursor:pointer">
+          <input type="checkbox" ${def.hasBorder?'checked':''} onchange="ELEM_DEFS.find(d=>d.id==='${def.id}').hasBorder=this.checked;renderLabel()" style="width:16px;height:16px;accent-color:var(--green)"/>
+          Çerçeve Göster
+        </label>
+        <div style="display:flex;align-items:center;gap:6px;font-size:13px">
+          <span style="font-weight:700;color:var(--gray-600)">Çerçeve px:</span>
+          <button class="size-btn" onclick="var d=ELEM_DEFS.find(x=>x.id==='${def.id}');d.borderWidth=Math.max(1,(d.borderWidth||1)-1);renderLabel()">−</button>
+          <span style="min-width:24px;text-align:center;font-weight:800">${def.borderWidth||1}</span>
+          <button class="size-btn" onclick="var d=ELEM_DEFS.find(x=>x.id==='${def.id}');d.borderWidth=Math.min(5,(d.borderWidth||1)+1);renderLabel()">+</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;font-size:13px">
+          <span style="font-weight:700;color:var(--gray-600)">G(mm):</span>
+          <button class="size-btn" onclick="var l=layout.find(x=>x.id==='${def.id}');if(l)l.w=Math.max(5,l.w-2);renderLabel()">−</button>
+          <button class="size-btn" onclick="var l=layout.find(x=>x.id==='${def.id}');if(l)l.w=l.w+2;renderLabel()">+</button>
+          <span style="font-weight:700;color:var(--gray-600);margin-left:4px">Y(mm):</span>
+          <button class="size-btn" onclick="var l=layout.find(x=>x.id==='${def.id}');if(l)l.h=Math.max(3,l.h-1);renderLabel()">−</button>
+          <button class="size-btn" onclick="var l=layout.find(x=>x.id==='${def.id}');if(l)l.h=l.h+1;renderLabel()">+</button>
+        </div>
+      </div>` : ''}
+      ` : ''}
+      <div class="font-preview" style="text-align:${align};font-size:${fs}px;font-weight:${def.bold?900:400};font-family:${def.mono?'monospace':'Arial,Helvetica,sans-serif'}">
+        ${previewText || '—'}
+      </div>
+    `;
+    container.appendChild(row);
+  });
+}
+function changeFontSize(id, delta) { setFontSize(id, (fontSizes[id]||6) + delta); }
+function setFontSize(id, v) { fontSizes[id] = Math.max(4, Math.min(72, parseInt(v))); renderLabel(); renderFontEditor(); }
+function setAlign(id, v) { aligns[id] = v; renderLabel(); renderFontEditor(); }
+ 
+const FONT_PRESETS = {
+  standart: { urunAdi:14, fiyat:20, kiloFiyat:6, fiyatDegisimTarihi:6, etiketTarihi:6, mensei:6, barkod:6, kdvDahil:6 },
+  buyuk:    { urunAdi:18, fiyat:26, kiloFiyat:8, fiyatDegisimTarihi:8, etiketTarihi:8, mensei:8, barkod:7, kdvDahil:7 },
+  kompakt:  { urunAdi:10, fiyat:16, kiloFiyat:5, fiyatDegisimTarihi:5, etiketTarihi:5, mensei:5, barkod:5, kdvDahil:5 },
+  vurgu:    { urunAdi:14, fiyat:30, kiloFiyat:7, fiyatDegisimTarihi:6, etiketTarihi:6, mensei:6, barkod:6, kdvDahil:6 },
+};
+function applyFontPreset(k) { Object.assign(fontSizes, FONT_PRESETS[k]); renderLabel(); renderFontEditor(); showToast('Yazı şablonu uygulandı!'); }
+ 
+// ─── QR FIELDS ────────────────────────────────────────────────────────────────
+function renderQrFields() {
+  const c = document.getElementById('qr-field-list');
+  if (!c) return;
+  c.innerHTML = '';
+  const p = getCur();
+  qrFields.forEach((qf, i) => {
+    const valText = qf.type==='field' && qf.field ? (p[qf.field]||'—') : qf.type==='custom' ? (qf.value||'—') : qf.type==='kilo' ? (getKilo(p)||'—')+'₺' : '';
+    const div = document.createElement('div');
+    div.className = 'qr-field';
+    div.innerHTML = `
+      <div class="toggle-wrap">
+        <button class="toggle ${qf.enabled?'on':''}" onclick="toggleQrField(${i})" title="${qf.enabled?'Kapat':'Aç'}">
+          <div class="toggle-knob"></div>
+        </button>
+      </div>
+      <div class="qr-field-info">
+        <div class="qr-field-name">${qf.label}</div>
+        ${qf.enabled&&valText ? `<div class="qr-field-val">${valText}</div>` : ''}
+        ${qf.type==='custom' ? `<input class="form-input" style="margin-top:6px;font-size:14px;padding:6px 10px" value="${qf.value||''}" placeholder="Değer girin..." oninput="qrFields[${i}].value=this.value;updateQrPreview()"/>` : ''}
+      </div>
+      ${qf.type==='custom' ? `<button class="btn btn-red btn-sm" onclick="removeQrField(${i})" style="padding:6px 10px;font-size:16px;flex-shrink:0">×</button>` : ''}
+    `;
+    c.appendChild(div);
+  });
+  updateQrPreview();
+}
+function toggleQrField(i) { qrFields[i].enabled = !qrFields[i].enabled; qrCache={}; renderLabel(); renderQrFields(); }
+function removeQrField(i) { qrFields.splice(i,1); renderLabel(); renderQrFields(); }
+function addCustomQrField() {
+  const lb = document.getElementById('qr-custom-label').value.trim();
+  const val = document.getElementById('qr-custom-val').value.trim();
+  if (!lb) return;
+  qrFields.push({ id:'c_'+Date.now(), type:'custom', label:lb, field:null, value:val, enabled:true });
+  document.getElementById('qr-custom-label').value='';
+  document.getElementById('qr-custom-val').value='';
+  renderLabel(); renderQrFields();
+}
+function updateQrPreview() {
+  const data = getQrData();
+  const el = document.getElementById('qr-content-preview');
+  if (el) el.textContent = data || '— (hiç alan seçilmedi)';
+  const prev = document.getElementById('qr-big-preview');
+  if (prev) { prev.innerHTML=''; if(data) { try { new QRCode(prev, { text:data, width:120, height:120, colorDark:'#000', colorLight:'#fff' }); } catch {} } }
+}
+ 
+// ─── EXCEL ────────────────────────────────────────────────────────────────────
+function handleDrop(e) { e.preventDefault(); document.getElementById('drop-zone').classList.remove('drag-over'); loadExcel(e.dataTransfer.files[0]); }
+function handleDragOver(e) { e.preventDefault(); document.getElementById('drop-zone').classList.add('drag-over'); }
+function handleDragLeave() { document.getElementById('drop-zone').classList.remove('drag-over'); }
+ 
+function loadExcel(file) {
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const wb = XLSX.read(e.target.result, { type:'binary' });
+      const ws = wb.Sheets[wb.SheetNames[0]];
+      const rows = XLSX.utils.sheet_to_json(ws, { defval:'' });
+      const g = (row, ...pats) => { for (const p of pats) { const k = Object.keys(row).find(k=>k.toLowerCase().includes(p)); if(k!==undefined) return row[k]; } return ''; };
+      const mapped = rows.map(row => ({
+        urunAdi: g(row,'ürün','urun','ad','isim','name'),
+        icindekiler: g(row,'içerik','icindekiler','alerjen','ingredient'),
+        netMiktar: g(row,'net','miktar','ağırlık','agirlik','weight','gram'),
+        stt: g(row,'stt','tett','tarih','date'),
+        partiNo: g(row,'parti','lot','batch'),
+        isletmeci: g(row,'işletme','isletme','üretici','firma'),
+        kayitNo: g(row,'kayıt','kayit','onay'),
+        mensei:  g(row,'menşe','mense','origin','ülke','country'),
+        saklama: g(row,'saklama','koşul','kosul','muhafaza'),
+        barkod:  String(g(row,'barkod','barcode','ean','kod')),
+        extraFields: [],
+      })).filter(p => p.urunAdi || p.stt);
+      if (mapped.length) {
+        products = mapped; selProd = 0; syncFormFields(); renderLabel();
+        showToast(`${mapped.length} ürün yüklendi!`);
+      } else alert('Eşleşen sütun bulunamadı. Lütfen şablonu indirip kullanın.');
+    } catch(err) { alert('Hata: ' + err.message); }
+  };
+  reader.readAsBinaryString(file);
+}
+ 
+function downloadTemplate() {
+  const wb = XLSX.utils.book_new();
+  const headers = ['Ürün Adı','İçindekiler','Net Miktar','STT','Parti No','İşletmeci Adı','Kayıt No','Menşei','Saklama Koşulları','Barkod'];
+  const data = [headers,
+    ['ARİFOĞLU LİMON TUZU 250GR','Limon Tuzu (Sitrik Asit)','250g','12.03.2026','LT2026','Arifoğlu Baharat A.Ş.','TR-34-K-000000','TÜRKİYE','Serin ve kuru yerde saklayınız.','8691530011318'],
+  ];
+  const ws = XLSX.utils.aoa_to_sheet(data);
+  ws['!cols'] = [35,40,12,12,12,25,18,15,30,16].map(w=>({wch:w}));
+  XLSX.utils.book_append_sheet(wb, ws, 'KoliEtiketleri');
+  XLSX.writeFile(wb, 'koli_etiket_sablon.xlsx');
+  showToast('Şablon indirildi!');
+}
+ 
+// ─── SAVE / LOAD ──────────────────────────────────────────────────────────────
+const SAVE_KEY = 'koliApp_v3'; // Versiyon değişince eski veri otomatik yoksayılır
+
+function saveData() {
+  try {
+    // Only save custom_text ELEM_DEFS (not base ones — they're hardcoded)
+    const customDefs = ELEM_DEFS.filter(d => d.type === 'custom_text');
+    localStorage.setItem(SAVE_KEY, JSON.stringify({
+      presetId, fontSizes, aligns, prefixes, customLabels,
+      products, qrFields, layout, customDefs,
+      logoData, logoRotation, logoScale, logoLayout,
+      barcodeType
+    }));
+    showToast('Kaydedildi! ✅');
+  } catch { showToast('Kaydetme başarısız!'); }
+}
+
+function clearSavedData() {
+  if (!confirm('Kaydedilmiş veriler silinsin mi? Sayfa yenilenecek.')) return;
+  localStorage.removeItem(SAVE_KEY);
+  location.reload();
+}
+
+function loadData() {
+  try {
+    const d = JSON.parse(localStorage.getItem(SAVE_KEY));
+    if (!d) return;
+
+    if (d.presetId) { presetId = d.presetId; selectPreset(presetId); }
+    if (d.barcodeType) { barcodeType = d.barcodeType; }
+
+    // Merge font/align/prefix — only for known IDs
+    const knownIds = ELEM_DEFS.map(e => e.id);
+    if (d.fontSizes) Object.keys(d.fontSizes).forEach(k => { fontSizes[k] = d.fontSizes[k]; });
+    if (d.aligns)    Object.keys(d.aligns).forEach(k => { aligns[k] = d.aligns[k]; });
+    if (d.prefixes)  Object.keys(d.prefixes).forEach(k => { prefixes[k] = d.prefixes[k]; });
+    if (d.customLabels) customLabels = d.customLabels;
+
+    // Restore custom text elements
+    if (d.customDefs && Array.isArray(d.customDefs)) {
+      d.customDefs.forEach(def => {
+        if (!ELEM_DEFS.find(e => e.id === def.id)) {
+          ELEM_DEFS.push(def);
+        }
+      });
+    }
+
+    if (d.products && Array.isArray(d.products)) {
+      products = d.products;
+      selProd = 0;
+      syncFormFields();
+    }
+    if (d.qrFields) qrFields = d.qrFields;
+
+    // Layout: only restore items whose id exists in ELEM_DEFS
+    if (d.layout && Array.isArray(d.layout)) {
+      const validIds = ELEM_DEFS.map(e => e.id);
+      layout = d.layout.filter(l => validIds.includes(l.id));
+      // Add any missing base elements that weren't in saved layout
+      ELEM_DEFS.forEach(def => {
+        if (!layout.find(l => l.id === def.id) && def.type !== 'custom_text') {
+          // Rebuild missing base element in default position
+          buildLayout(); // rebuild all defaults
+          return;
+        }
+      });
+    }
+
+    // Logo
+    if (d.logoData) { logoData = d.logoData; logoRotation = d.logoRotation || 0; logoScale = d.logoScale || 1; logoLayout = d.logoLayout || null; }
+
+    renderLabel(); renderFontEditor(); renderQrFields(); renderExtraFields();
+    if (typeof renderLogoControls === 'function') renderLogoControls();
+  } catch(e) { console.warn('loadData error:', e); }
+}
+ 
+// ─── PRINT / PDF ──────────────────────────────────────────────────────────────
+function getPrintHTML(prodOverride) {
+  const W = getLW(), H = getLH();
+  const p = prodOverride || getCur();
+  const kilo = getKilo(p);
+  const qrData = getQrDataForProduct ? getQrDataForProduct(p) : getQrData();
+  const bData = getBarcodeData(p);
+  let elems = '';
+  layout.forEach(item => {
+    const def = ELEM_DEFS.find(e=>e.id===item.id);
+    if (!def) return;
+    const x=item.x*PX, y=item.y*PX, iw=item.w*PX, ih=item.h*PX;
+    const fs=fontSizes[item.id]||6;
+    const align=aligns[item.id]||def.defaultAlign;
+    const prefix=prefixes[item.id]!==undefined?prefixes[item.id]:(def.prefix||'');
+    const jc=align==='center'?'center':align==='right'?'flex-end':'flex-start';
+    if (def.type==='qr') {
+      const sz=Math.round(Math.min(iw,ih)-2);
+      elems+=`<div style="position:absolute;left:${x}px;top:${y}px;width:${iw}px;height:${ih}px;display:flex;align-items:center;justify-content:center"><div id="prqr" style="width:${sz}px;height:${sz}px"></div></div>`;
+    } else if (def.type==='barcode') {
+      const canW=Math.round(iw-2), canH=Math.round(ih-4);
+      elems+=`<div style="position:absolute;left:${x}px;top:${y}px;width:${iw}px;height:${ih}px;display:flex;align-items:center;justify-content:center"><canvas id="prbc" width="${canW}" height="${canH}"></canvas></div>`;
+    } else {
+      let txt = (prefix+(def.field?(p[def.field]||''):'')).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      const border = (def.type==='custom_text'&&def.hasBorder) ? `border:${def.borderWidth||1}px solid #000;padding:2px;` : '';
+      elems+=`<div style="position:absolute;left:${x}px;top:${y}px;width:${iw}px;height:${ih}px;overflow:hidden;display:flex;align-items:flex-start;justify-content:${jc};${border}"><span style="font-size:${fs}px;font-weight:${def.bold?900:400};line-height:1.3;font-family:${def.mono?'monospace':'Arial,Helvetica,sans-serif'};text-align:${align};display:block;width:100%;overflow:hidden;word-break:break-word;white-space:pre-wrap;max-height:${ih}px">${txt}</span></div>`;
+    }
+  });
+  // Logo
+  if (logoData && logoLayout) {
+    const lx=logoLayout.x*PX, ly=logoLayout.y*PX;
+    const lw=logoLayout.w*PX*logoScale, lh=logoLayout.h*PX*logoScale;
+    elems+=`<div style="position:absolute;left:${lx}px;top:${ly}px;width:${lw}px;height:${lh}px;overflow:hidden;"><img src="${logoData}" style="width:100%;height:100%;object-fit:contain;transform:rotate(${logoRotation}deg);transform-origin:center;"/></div>`;
+  }
+  return `<div style="width:${W*PX}px;height:${H*PX}px;background:white;border:1px solid #999;position:relative;font-family:Arial,Helvetica,sans-serif;color:#000;overflow:hidden">${elems}</div>`;
+}
+ 
+function getCodeScript(qrData, bData) {
+  const safeQr = (qrData||' ').replace(/'/g,"\\'");
+  const safeB = (bData||'').replace(/'/g,"\\'");
+  const bFormat = barcodeType === 'ean13' ? 'EAN13' : barcodeType === 'code39' ? 'CODE39' : 'CODE128';
+  return `
+    var qrEl = document.getElementById('prqr');
+    if (qrEl) { try { new QRCode(qrEl, { text: '${safeQr}', width: qrEl.offsetWidth||60, height: qrEl.offsetHeight||60, colorDark: '#000', colorLight: '#fff' }); } catch(e){} }
+    var bcEl = document.getElementById('prbc');
+    if (bcEl && '${safeB}') { try { JsBarcode(bcEl, '${safeB}', { format: '${bFormat}', displayValue: true, margin: 0, width: Math.max(1, Math.floor(bcEl.width / ('${bFormat}'==='EAN13'?95:'${bFormat}'==='CODE39'?80:110))), height: bcEl.height * 0.8, fontSize: Math.max(10, Math.round(bcEl.height * 0.2)) }); } catch(e){} }
+  `;
+}
+ 
+function setCopies(n) {
+  printCopies = Math.max(1, Math.min(50, n));
+  const el = document.getElementById('copies-val'); if(el) el.textContent = printCopies;
+  const rng = document.getElementById('copies-range'); if(rng) rng.value = printCopies;
+}
+
+function doPrint() {
+  const W=getLW(), H=getLH();
+  const qrData=getQrData();
+  const bData=getBarcodeData(getCur());
+  const singleHtml=getPrintHTML();
+  // Repeat the label N times for N copies
+  let allHtml = '';
+  for (let i = 0; i < printCopies; i++) {
+    const isLast = i === printCopies - 1;
+    allHtml += `<div style="page-break-after:${isLast?'auto':'always'}">${singleHtml}</div>`;
+  }
+  const script=getCodeScript(qrData,bData)+'setTimeout(function(){window.print();},800);';
+  const css=`*{margin:0;padding:0;box-sizing:border-box;}@media print{@page{size:${W}mm ${H}mm;margin:0;}}body{background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;gap:4mm;}img{image-rendering:pixelated;display:block;}`;
+  const libs = `<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"><\/script><script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"><\/script>`;
+  openPrintWindow(`Etiket × ${printCopies}`, `${libs}${allHtml}`, script, css);
+}
+ 
+function exportPDF() {
+  const W=getLW(), H=getLH();
+  const qrData=getQrData();
+  const bData=getBarcodeData(getCur());
+  const html=getPrintHTML();
+  const hint=`<div class="hint-bar">📄 PDF için: <strong>Yazdır → Yazıcı: PDF Olarak Kaydet</strong> · ${W}×${H}mm</div>`;
+  const script=getCodeScript(qrData,bData)+'setTimeout(function(){window.print();},800);';
+  const css=`*{margin:0;padding:0;box-sizing:border-box;}
+  @media print{@page{size:${W}mm ${H}mm;margin:0;}.hint-bar{display:none!important;}body{padding:0!important;}}
+  body{background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;font-family:sans-serif;}
+  .hint-bar{font-size:12px;color:#555;background:#f5f5f5;padding:8px 16px;border-radius:6px;margin-bottom:10px;text-align:center;}
+  img{image-rendering:pixelated;display:block;}`;
+  const libs = `<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"><\/script><script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"><\/script>`;
+  openPrintWindow(getCur().urunAdi||'Etiket', `${libs}${hint}${html}`, script, css);
+}
+ 
+// ─── BARCODE ENGINE ────────────────────────────────────────────────────────────
+function getBarcodeData(p) {
+  const src = document.querySelector('input[name="ean-src"]:checked');
+  const useCustom = src && src.value === 'custom';
+  let raw = useCustom ? (document.getElementById('ean-custom-val')?.value||'') : (p.barkod||'');
+  if (barcodeType === 'ean13') {
+    raw = raw.replace(/\D/g,'');
+    if (raw.length < 12) raw = raw.padEnd(12,'0');
+    if (raw.length === 12) {
+      let s = 0;
+      for (let i=0; i<12; i++) s += parseInt(raw[i]) * (i%2===0?1:3);
+      raw += (10 - (s%10)) % 10;
+    }
+    if (raw.length > 13) raw = raw.slice(0,13);
+  }
+  return raw || '0000000000000';
+}
+ 
+function drawBarcodeCanvas(canvas, data, width, height) {
+  if (!data) return;
+  const fmt = barcodeType === 'ean13' ? 'EAN13' : barcodeType === 'code39' ? 'CODE39' : 'CODE128';
+  const barW = fmt === 'EAN13' ? 95 : fmt === 'CODE39' ? 80 : 110;
+  try {
+    JsBarcode(canvas, data, {
+      format: fmt,
+      displayValue: true,
+      fontSize: Math.max(10, Math.round(height * 0.2)),
+      margin: 0,
+      width: Math.max(1, Math.floor(width / barW)),
+      height: height * 0.8
+    });
+  } catch(e) { console.error('Barcode error:', e); }
+}
+
+function toggleElemVisibility(id, isVisible) {
+  if (isVisible) {
+    if (!layout.find(el => el.id === id)) {
+      const def = ELEM_DEFS.find(d => d.id === id);
+      if (def) {
+        layout.push({ id: id, x: 10, y: 10, w: getLW()*0.4, h: getLH()*0.15 });
+      }
+    }
+  } else {
+    layout = layout.filter(el => el.id !== id);
+  }
+  
+  if (id === 'qr') {
+    document.getElementById('qr-section').style.display = isVisible ? 'block' : 'none';
+  } else if (id === 'barkod_img') {
+    document.getElementById('ean13-section').style.display = isVisible ? 'block' : 'none';
+  }
+  
+  renderLabel();
+}
+ 
+// ─── BULK PRINT / PDF ────────────────────────────────────────────────────────
+function buildAllLabelsHTML(forPDF) {
+  const W = getLW(), H = getLH();
+  // Snapshot selProd; iterate all products
+  const savedProd = selProd;
+ 
+  // Removed manual EAN13 script, using JsBarcode instead
+  const eanScriptDef = `function drawEP(c, d, t) { if(!d)return; try { JsBarcode(c, d, { format: t, displayValue: true, margin: 0, width: Math.max(1, Math.floor(c.width / (t==='EAN13'?95:110))), height: c.height * 0.8, fontSize: Math.max(10, Math.round(c.height * 0.2)) }); } catch(e){} }`;
+ 
+  let labelsHtml = '';
+  let initScript = '';
+ 
+  for (let i = 0; i < products.length; i++) {
+    selProd = i;
+    const p = products[i];
+    const kilo = getKilo(p);
+    const qrData = getQrDataForProduct(p);
+    const bData = getBarcodeData(p);
+    let elems = '';
+ 
+    layout.forEach(item => {
+      const def = ELEM_DEFS.find(e=>e.id===item.id);
+      if (!def) return;
+      const x=item.x*PX, y=item.y*PX, iw=item.w*PX, ih=item.h*PX;
+      const fs=fontSizes[item.id]||6;
+      const align=aligns[item.id]||def.defaultAlign;
+      const prefix=prefixes[item.id]!==undefined?prefixes[item.id]:(def.prefix||'');
+      const jc=align==='center'?'center':align==='right'?'flex-end':'flex-start';
+      if (def.type==='qr') {
+        const sz=Math.round(Math.min(iw,ih)-2);
+        const safeQr=(qrData||' ').replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+        elems+=`<div style="position:absolute;left:${x}px;top:${y}px;width:${iw}px;height:${ih}px;display:flex;align-items:center;justify-content:center"><div id="qr_${i}" style="width:${sz}px;height:${sz}px"></div></div>`;
+        initScript+=`try{new QRCode(document.getElementById('qr_${i}'),{text:'${safeQr}',width:${sz},height:${sz},colorDark:'#000',colorLight:'#fff'});}catch(e){}`;
+      } else if (def.type==='barcode') {
+        const canW=Math.round(iw-2), canH=Math.round(ih-4);
+        const bFormat = barcodeType === 'ean13' ? 'EAN13' : 'CODE128';
+        const safeB=(bData||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+        elems+=`<div style="position:absolute;left:${x}px;top:${y}px;width:${iw}px;height:${ih}px;display:flex;align-items:center;justify-content:center"><canvas id="bc_${i}" width="${canW}" height="${canH}"></canvas></div>`;
+        initScript+=`var c_${i}=document.getElementById('bc_${i}');if(c_${i})drawEP(c_${i},'${safeB}','${bFormat}');`;
+      } else {
+        let txt=def.type==='price'?(p.fiyat?Number(p.fiyat).toLocaleString('tr-TR',{minimumFractionDigits:2})+'₺':'—'):def.type==='kilo'?(kilo?`Kilo Fiyatı : ${kilo}₺`:''):(prefix+(def.field?(p[def.field]||''):''));
+        txt=txt.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+        elems+=`<div style="position:absolute;left:${x}px;top:${y}px;width:${iw}px;height:${ih}px;overflow:hidden;display:flex;align-items:flex-start;justify-content:${jc}"><span style="font-size:${fs}px;font-weight:${def.bold?900:400};line-height:1.3;font-family:${def.mono?'monospace':'Arial,Helvetica,sans-serif'};text-align:${align};display:block;width:100%;overflow:hidden;word-break:break-word;white-space:normal;max-height:${ih}px">${txt}</span></div>`;
+      }
+    });
+ 
+    // Logo
+    if (logoData && logoLayout) {
+      const lx=logoLayout.x*PX, ly=logoLayout.y*PX;
+      const lw=logoLayout.w*PX*logoScale, lh=logoLayout.h*PX*logoScale;
+      elems+=`<div style="position:absolute;left:${lx}px;top:${ly}px;width:${lw}px;height:${lh}px;overflow:hidden;"><img src="${logoData}" style="width:100%;height:100%;object-fit:contain;transform:rotate(${logoRotation}deg);transform-origin:center;"/></div>`;
+    }
+
+    const isLast = i === products.length-1;
+    labelsHtml += `<div class="lbl" style="width:${W*PX}px;height:${H*PX}px;background:white;border:1px solid #999;position:relative;font-family:Arial,Helvetica,sans-serif;color:#000;overflow:hidden;${isLast?'':'margin-bottom:2mm;'}">${elems}</div>\n`;
+  }
+ 
+  selProd = savedProd;
+ 
+  const hint = forPDF ? `<div class="hint-bar">📄 PDF için: <strong>Yazdır → PDF Olarak Kaydet</strong> · ${W}×${H}mm · ${products.length} etiket</div>` : '';
+  const css = `*{margin:0;padding:0;box-sizing:border-box;}body{background:#fff;font-family:sans-serif;}.hint-bar{font-size:12px;color:#555;background:#f5f5f5;padding:8px 16px;border-radius:6px;margin-bottom:10px;text-align:center;font-family:sans-serif;}@media print{@page{size:${W}mm ${H}mm;margin:0;}.lbl{page-break-after:always;margin-bottom:0!important;}body{padding:0;}.hint-bar{display:none!important;}}`;
+ 
+  return { labelsHtml, eanScriptDef, initScript, hint, css };
+}
+ 
+// Helper: get QR data for a specific product without changing selProd state
+function getQrDataForProduct(p) {
+  const kilo = getKilo(p);
+  return qrFields.filter(f=>f.enabled).map(f=>{
+    if (f.type==='field') return p[f.field]||'';
+    if (f.type==='kilo')  return kilo?`Kilo:${kilo}`:'';
+    if (f.type==='custom') return f.value||'';
+    return '';
+  }).filter(Boolean).join('|');
+}
+ 
+// Helper: get EAN-13 number for a specific product
+function getEAN13NumberForProduct(p) {
+  const src = document.querySelector('input[name="ean-src"]:checked');
+  const useCustom = src && src.value==='custom';
+  let raw = useCustom ? (document.getElementById('ean-custom-val')?.value||'') : (p.barkod||'');
+  raw = raw.replace(/\D/g,'');
+  if (raw.length<12) raw=raw.padEnd(12,'0');
+  if (raw.length===12) raw+=calcEAN13Check(raw);
+  if (raw.length>13) raw=raw.slice(0,13);
+  return raw;
+}
+ 
+function openPrintWindow(title, bodyContent, scriptContent, css) {
+  // Use blob URL to avoid popup blocker issues with document.write
+  const fullHtml = `<!DOCTYPE html><html><head><meta charset="UTF-8"/><title>${title}</title><style>${css}</style></head><body>${bodyContent}<script>${scriptContent}<\/script></body></html>`;
+  const blob = new Blob([fullHtml], {type:'text/html;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const win = window.open(url, '_blank');
+  if (!win) {
+    // Fallback: create a temporary link and click it
+    const a = document.createElement('a');
+    a.href = url; a.target = '_blank'; a.click();
+  }
+  // Revoke after a delay
+  setTimeout(() => URL.revokeObjectURL(url), 30000);
+}
+ 
+function doPrintAll() {
+  const { labelsHtml, eanScriptDef, initScript, hint, css } = buildAllLabelsHTML(false);
+  const libs = `<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"><\/script><script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"><\/script>`;
+  const fullBody = `${hint}${labelsHtml}`;
+  const script = `${eanScriptDef}${initScript}setTimeout(function(){window.print();},1200);`;
+  openPrintWindow(`Toplu Baskı (${products.length} etiket)`, libs+fullBody, script, css);
+  showToast(`${products.length} etiket yazdırılıyor...`);
+}
+ 
+function exportPDFAll() {
+  const { labelsHtml, eanScriptDef, initScript, hint, css } = buildAllLabelsHTML(true);
+  const libs = `<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"><\/script><script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"><\/script>`;
+  const fullBody = `${hint}${labelsHtml}`;
+  const script = `${eanScriptDef}${initScript}setTimeout(function(){window.print();},1200);`;
+  openPrintWindow(`Toplu PDF (${products.length} etiket)`, libs+fullBody, script, css);
+  showToast(`${products.length} etiket PDF hazırlanıyor...`);
+}
+ 
+// ─── YENİ ETİKET OLUŞTUR ──────────────────────────────────────────────────────
+function newLabel() {
+  if (!confirm('Mevcut etiketi sıfırlamak istiyor musunuz? Kaydedilmemiş değişiklikler kaybolur.')) return;
+  // Reset all custom text elements
+  ELEM_DEFS = ELEM_DEFS.filter(d => !d.id.startsWith('ef_'));
+  // Remove from layout too
+  const baseIds = ['urunAdi','icindekiler','netMiktar','stt','partiNo','isletmeci','kayitNo','mensei','saklama','qr','barkod','barkod_img'];
+  layout = layout.filter(l => baseIds.includes(l.id));
+  // Remove extra fontSizes/aligns/prefixes
+  Object.keys(fontSizes).forEach(k => { if(k.startsWith('ef_')) delete fontSizes[k]; });
+  Object.keys(aligns).forEach(k => { if(k.startsWith('ef_')) delete aligns[k]; });
+  Object.keys(prefixes).forEach(k => { if(k.startsWith('ef_')) delete prefixes[k]; });
+  // Reset products to one blank
+  products = [{ urunAdi:'', altBilgi:'', barkod:'', stt:'', partiNo:'', saklama:'', barkodBaslik:'KOLİ BARKODU', qrMetin:'', extraFields:[] }];
+  selProd = 0;
+  selElId = null;
+  _efCounter = 0;
+  // Reset to default preset
+  selectPreset(presetId);
+  syncFormFields();
+  renderLabel();
+  renderFontEditor();
+  renderExtraFields();
+  showStep(1);
+  showToast('✅ Yeni etiket başlatıldı!');
+}
+let curStep = 1;
+function showStep(n) {
+  curStep = n;
+  for (let i=1; i<=4; i++) {
+    document.getElementById('step-'+i).style.display = i===n ? 'block' : 'none';
+    const btn = document.getElementById('step-btn-'+i);
+    btn.classList.toggle('active', i===n);
+    btn.classList.toggle('done', i<n);
+  }
+  if (n===2) renderExtraFields();
+  if (n===3) renderFontEditor();
+  if (n===4) { renderQrFields(); updateQrPreview(); setCodeType(codeType); }
+  renderLabel();
+}
+ 
+// ─── TOAST ────────────────────────────────────────────────────────────────────
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  t.style.display = 'flex';
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.style.display='none', 2200);
+}
+ 
+// ─── INIT ────────────────────────────────────────────────────────────────────
+// ─── CORNER RESIZE HANDLES ───────────────────────────────────────────────────
+// ─── SAVE / LOAD FILE ────────────────────────────────────────────────────────
+function getSaveData() {
+  return {
+    version: 3,
+    presetId, cw: document.getElementById('cw')?.value, ch: document.getElementById('ch')?.value,
+    fontSizes, aligns, prefixes, customLabels, products, qrFields, layout,
+    barcodeType, ELEM_DEFS_custom: ELEM_DEFS.filter(d => d.id.startsWith('custom_txt_')),
+    margins: getMg(),
+    savedAt: new Date().toISOString(),
+    projectName: getCur().urunAdi || 'koli-etiketi',
+  };
+}
+
+async function saveToFile() {
+  const data = getSaveData();
+  const json = JSON.stringify(data, null, 2);
+  const defaultName = (data.projectName).replace(/[^a-z0-9ğüşıöçA-ZĞÜŞİÖÇ\s]/gi,'-').substring(0,40) + '.json';
+
+  // Try File System Access API (Chrome/Edge) — allows choosing folder
+  if (window.showSaveFilePicker) {
+    try {
+      const handle = await window.showSaveFilePicker({
+        suggestedName: defaultName,
+        types: [{ description: 'Koli Etiketi Projesi', accept: { 'application/json': ['.json'] } }],
+      });
+      const writable = await handle.createWritable();
+      await writable.write(json);
+      await writable.close();
+      showToast('✅ Kaydedildi! Dosyayı istediğiniz zaman yükleyip yazdırabilirsiniz.');
+      return;
+    } catch (err) {
+      if (err.name === 'AbortError') return; // User cancelled
+    }
+  }
+  // Fallback: download to default Downloads folder
+  const blob = new Blob([json], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = defaultName; a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 5000);
+  showToast('💾 Dosya indirildi! "Dosyadan Yükle" ile tekrar açabilirsiniz.');
+}
+
+async function saveAsFile() {
+  // Ask user for a custom file name
+  const data = getSaveData();
+  const defaultName = (data.projectName || 'koli-etiketi').replace(/[^a-z0-9ğüşıöçA-ZĞÜŞİÖÇ\s]/gi,'-').substring(0,40);
+  const userInput = window.prompt('Dosya adını girin:', defaultName);
+  if (userInput === null) return; // Cancelled
+  const fileName = (userInput.trim() || defaultName).replace(/\.json$/i,'') + '.json';
+  const json = JSON.stringify(data, null, 2);
+
+  // Try File System Access API first
+  if (window.showSaveFilePicker) {
+    try {
+      const handle = await window.showSaveFilePicker({
+        suggestedName: fileName,
+        types: [{ description: 'Koli Etiketi Projesi', accept: { 'application/json': ['.json'] } }],
+      });
+      const writable = await handle.createWritable();
+      await writable.write(json);
+      await writable.close();
+      showToast('✅ "' + fileName + '" kaydedildi!');
+      return;
+    } catch (err) {
+      if (err.name === 'AbortError') return;
+    }
+  }
+  // Fallback download
+  const blob = new Blob([json], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = fileName; a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 5000);
+  showToast('💾 "' + fileName + '" indirildi!');
+}
+
+function loadFromFile(input) {
+  const file = input?.files?.[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const d = JSON.parse(e.target.result);
+      if (d.presetId) { presetId = d.presetId; selectPreset(presetId); }
+      if (d.cw && d.ch) {
+        const cw = document.getElementById('cw'); if(cw) cw.value = d.cw;
+        const ch = document.getElementById('ch'); if(ch) ch.value = d.ch;
+      }
+      if (d.fontSizes)   fontSizes   = { ...fontSizes,   ...d.fontSizes };
+      if (d.aligns)      aligns      = { ...aligns,      ...d.aligns };
+      if (d.prefixes)    prefixes    = { ...prefixes,    ...d.prefixes };
+      if (d.customLabels) customLabels = d.customLabels;
+      if (d.products)    { products = d.products; selProd = 0; syncFormFields(); }
+      if (d.qrFields)    qrFields    = d.qrFields;
+      if (d.layout)      layout      = d.layout;
+      if (d.barcodeType) barcodeType = d.barcodeType;
+      if (d.ELEM_DEFS_custom && d.ELEM_DEFS_custom.length) {
+        d.ELEM_DEFS_custom.forEach(cd => {
+          if (!ELEM_DEFS.find(x => x.id === cd.id)) ELEM_DEFS.push(cd);
+        });
+      }
+      if (d.margins) {
+        ['top','bottom','left','right'].forEach(k => {
+          const el = document.getElementById('mg-'+k); if(el) el.value = d.margins[k]||1;
+        });
+      }
+      renderLabel(); renderFontEditor(); renderQrFields();
+      if (input) input.value = '';
+      // Show print prompt
+      showToast('✅ Proje yüklendi! Yazdırmak için 🖨️ butonunu kullanın.');
+    } catch(err) { alert('Dosya okuma hatası: ' + err.message); }
+  };
+  reader.readAsText(file);
+}
+
+// Open file picker to load a saved project
+async function openFromFile() {
+  if (window.showOpenFilePicker) {
+    try {
+      const [handle] = await window.showOpenFilePicker({
+        types: [{ description: 'Koli Etiketi Projesi', accept: { 'application/json': ['.json'] } }],
+      });
+      const file = await handle.getFile();
+      const text = await file.text();
+      const fakeInput = { files: [new File([text], file.name, { type: 'application/json' })] };
+      loadFromFile(fakeInput);
+      return;
+    } catch (err) {
+      if (err.name === 'AbortError') return;
+    }
+  }
+  // Fallback
+  document.getElementById('load-file-input').click();
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  buildLayout();
+  syncFormFields();
+  loadData();
+  setInterval(saveData, 30000);
+
+  // Quick edit keyboard shortcuts
+  ['qe-prefix', 'qe-value'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('keydown', ev => {
+      if (ev.key === 'Enter')  { applyQuickEdit(); closeQuickEdit(); }
+      if (ev.key === 'Escape') { closeQuickEdit(); }
+    });
+  });
+  // Sel panel text edit Enter key
+  ['sel-prefix-inp', 'sel-value-inp'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('keydown', ev => {
+      if (ev.key === 'Enter') { applySelPanelEdit(); el.blur(); }
+    });
+  });
+});
+</script>
+</body>
+</html>

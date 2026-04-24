@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>EtiketEditoru.com — Fiyat, Koli, Gıda ve Kozmetik Etiketi Sistemi | Ücretsiz</title>
+<meta name="description" content="Ücretsiz online etiket tasarım programı. Fiyat etiketi, koli etiketi, Türk Gıda Kodeksi uyumlu gıda etiketi ve TİTCK uyumlu kozmetik etiketi. Excel yükleme, QR kod, EAN-13 barkod, toplu PDF."/>
+<meta name="keywords" content="fiyat etiketi programı, koli etiketi, gıda etiketi, kozmetik etiketi, INCI listesi, TİTCK uyumlu etiket, Türk Gıda Kodeksi, ücretsiz etiket tasarım, EAN-13 barkod, Excel etiket"/>
+<meta name="robots" content="index, follow"/>
+<link rel="canonical" href="https://etiketEditoru.com/"/>
+<meta property="og:title" content="EtiketEditoru.com — Profesyonel Etiket Tasarım Sistemi"/>
+<meta property="og:description" content="4 farklı editör: Fiyat, koli, gıda ve kozmetik etiketi. Ücretsiz, mevzuat uyumlu, tarayıcıda çalışır."/>
+<meta property="og:type" content="website"/>
+<meta property="og:url" content="https://etiketEditoru.com/"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"EtiketEditoru.com","url":"https://etiketEditoru.com","description":"Ücretsiz profesyonel etiket tasarım ve yazdırma platformu.","applicationCategory":"BusinessApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"TRY"}}
+</script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --font:'Plus Jakarta Sans',system-ui,sans-serif;
+  --g1:#064e3b;--g2:#065f46;--g3:#047857;--g4:#059669;--g5:#10b981;--g6:#6ee7b7;--g7:#d1fae5;
+  --ink:#0f172a;--ink2:#1e293b;--muted:#475569;--light:#94a3b8;
+  --border:#e2e8f0;--bg:#f8fafc;--white:#fff;
+  --shadow:0 4px 16px rgba(0,0,0,.08);
+  --shadow-lg:0 20px 48px rgba(0,0,0,.1);
+  --r:14px;--r-lg:20px;
+}
+html{scroll-behavior:smooth;}
+body{font-family:var(--font);background:var(--bg);color:var(--ink);line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+a{color:inherit;text-decoration:none;}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+.anim{opacity:0;}
+.anim.on{animation:fadeUp .6s ease forwards;}
+.d1{animation-delay:.1s!important;}.d2{animation-delay:.2s!important;}.d3{animation-delay:.3s!important;}.d4{animation-delay:.4s!important;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;height:68px;padding:0 48px;display:flex;align-items:center;gap:6px;background:rgba(248,250,252,.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);transition:box-shadow .3s;}
+nav.scr{box-shadow:var(--shadow);}
+.nlogo{display:flex;align-items:center;gap:10px;margin-right:auto;}
+.nmark{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--g2),var(--g5));display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 4px 12px rgba(5,150,105,.3);}
+.ntxt{font-size:17px;font-weight:800;color:var(--ink);letter-spacing:-.3px;}
+.ntxt em{color:var(--g4);font-style:normal;}
+.nlink{padding:8px 13px;border-radius:8px;font-size:14px;font-weight:600;color:var(--muted);transition:.15s;}
+.nlink:hover{background:var(--g7);color:var(--g2);}
+.ncta{margin-left:8px;padding:9px 20px;border-radius:10px;background:var(--g3);color:white;font-size:14px;font-weight:700;box-shadow:0 4px 12px rgba(5,150,105,.3);transition:.2s;}
+.ncta:hover{background:var(--g2);transform:translateY(-1px);}
+
+/* HERO */
+.hero{min-height:100vh;padding:130px 48px 80px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;position:relative;overflow:hidden;}
+.hbg{position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% -10%,rgba(6,95,70,.1) 0%,transparent 70%),radial-gradient(ellipse 40% 40% at 80% 80%,rgba(16,185,129,.06) 0%,transparent 60%),var(--bg);}
+.hgrid{position:absolute;inset:0;opacity:.35;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:40px 40px;-webkit-mask-image:radial-gradient(ellipse 70% 60% at 50% 50%,black 0%,transparent 80%);}
+.hcont{position:relative;z-index:1;max-width:800px;}
+.hbadge{display:inline-flex;align-items:center;gap:8px;background:white;border:1.5px solid var(--g6);color:var(--g2);padding:6px 16px;border-radius:100px;font-size:13px;font-weight:700;margin-bottom:28px;box-shadow:0 1px 6px rgba(0,0,0,.08);animation:fadeIn .8s ease forwards;}
+.bdot{width:7px;height:7px;background:var(--g4);border-radius:50%;animation:pulse 2s infinite;}
+.hero h1{font-size:clamp(38px,6vw,68px);font-weight:900;line-height:1.05;letter-spacing:-1.5px;margin-bottom:24px;animation:fadeUp .7s .1s ease both;}
+.hl{background:linear-gradient(135deg,var(--g3),var(--g5));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.hsub{font-size:18px;color:var(--muted);max-width:580px;margin:0 auto 40px;line-height:1.7;animation:fadeUp .7s .2s ease both;}
+.hbtns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;animation:fadeUp .7s .3s ease both;}
+.hbtn{padding:14px 28px;border-radius:12px;font-size:15px;font-weight:700;transition:.2s;border:none;cursor:pointer;}
+.hbtn-p{background:var(--g3);color:white;box-shadow:0 8px 24px rgba(5,150,105,.35);}
+.hbtn-p:hover{background:var(--g2);transform:translateY(-2px);box-shadow:0 12px 32px rgba(5,150,105,.45);}
+.hbtn-o{background:white;color:var(--g2);border:2px solid var(--border);}
+.hbtn-o:hover{border-color:var(--g5);transform:translateY(-2px);box-shadow:var(--shadow);}
+.hstats{display:flex;gap:32px;justify-content:center;flex-wrap:wrap;margin-top:56px;padding-top:32px;border-top:1px solid var(--border);animation:fadeUp .7s .4s ease both;}
+.hsnum{font-size:28px;font-weight:900;color:var(--ink);line-height:1;}
+.hslbl{font-size:11px;color:var(--light);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-top:4px;}
+
+/* SECTION */
+.sec{max-width:1120px;margin:0 auto;padding:0 48px;}
+.sey{font-size:12px;font-weight:800;color:var(--g4);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:12px;}
+.stit{font-size:clamp(26px,3.5vw,40px);font-weight:900;letter-spacing:-.5px;line-height:1.1;margin-bottom:16px;}
+.ssub{font-size:17px;color:var(--muted);line-height:1.7;max-width:560px;}
+.shdr{text-align:center;margin-bottom:56px;}
+.shdr .ssub{margin:0 auto;}
+
+/* EDITORS */
+.ew{padding:96px 0;background:white;}
+.egrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px;margin-top:8px;}
+.ec{background:var(--bg);border-radius:var(--r-lg);padding:28px 24px;border:1.5px solid var(--border);transition:.25s;position:relative;overflow:hidden;display:block;}
+.ec::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:var(--r-lg) var(--r-lg) 0 0;}
+.ec-g::before{background:linear-gradient(90deg,#065f46,#10b981);}
+.ec-o::before{background:linear-gradient(90deg,#c2410c,#f97316);}
+.ec-b::before{background:linear-gradient(90deg,#1e40af,#3b82f6);}
+.ec-p::before{background:linear-gradient(90deg,#6d28d9,#a855f7);}
+.ec:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg);border-color:transparent;}
+.eico{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:18px;}
+.ec-g .eico{background:#dcfce7;}.ec-o .eico{background:#ffedd5;}.ec-b .eico{background:#dbeafe;}.ec-p .eico{background:#ede9fe;}
+.ec h3{font-size:18px;font-weight:800;margin-bottom:8px;letter-spacing:-.2px;}
+.ec p{font-size:13.5px;color:var(--muted);line-height:1.65;margin-bottom:18px;}
+.etags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:22px;}
+.et{font-size:11px;font-weight:700;padding:3px 9px;border-radius:100px;}
+.ec-g .et{background:#dcfce7;color:#065f46;}.ec-o .et{background:#ffedd5;color:#c2410c;}
+.ec-b .et{background:#dbeafe;color:#1e40af;}.ec-p .et{background:#ede9fe;color:#6d28d9;}
+.etg{background:#f1f5f9;color:#475569;}
+.ecta{font-size:13.5px;font-weight:800;display:inline-flex;align-items:center;gap:5px;}
+.ec-g .ecta{color:var(--g3);}.ec-o .ecta{color:#ea580c;}.ec-b .ecta{color:#2563eb;}.ec-p .ecta{color:#7c3aed;}
+
+/* STATS */
+.sb{background:linear-gradient(135deg,var(--g1),var(--g2));padding:56px 48px;}
+.si{max-width:900px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));}
+.si-it{text-align:center;color:white;padding:0 20px;position:relative;}
+.si-it+.si-it::before{content:'';position:absolute;left:0;top:20%;height:60%;width:1px;background:rgba(255,255,255,.2);}
+.sinum{font-size:40px;font-weight:900;line-height:1;}
+.silbl{font-size:12px;opacity:.75;margin-top:6px;font-weight:600;}
+
+/* FEATURES */
+.fw{padding:96px 0;background:var(--bg);}
+.fgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px;margin-top:8px;}
+.fc{background:white;border-radius:var(--r);padding:28px;border:1.5px solid var(--border);transition:.2s;}
+.fc:hover{border-color:var(--g6);box-shadow:var(--shadow);transform:translateY(-3px);}
+.femi{font-size:28px;margin-bottom:14px;}
+.fc h4{font-size:15px;font-weight:800;margin-bottom:7px;}
+.fc p{font-size:13.5px;color:var(--muted);line-height:1.65;}
+
+/* HOW */
+.hw{padding:96px 0;background:white;}
+.sgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:24px;position:relative;}
+.sgrid::before{content:'';position:absolute;top:32px;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,var(--border) 20%,var(--border) 80%,transparent);}
+.sc{text-align:center;padding:32px 20px;position:relative;z-index:1;}
+.snum{width:52px;height:52px;border-radius:50%;margin:0 auto 18px;background:linear-gradient(135deg,var(--g3),var(--g5));color:white;font-size:20px;font-weight:900;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 20px rgba(5,150,105,.35);}
+.sc h4{font-size:16px;font-weight:800;margin-bottom:8px;}
+.sc p{font-size:13.5px;color:var(--muted);line-height:1.65;}
+
+/* CTA */
+.ctaw{padding:100px 48px;text-align:center;background:linear-gradient(135deg,var(--g1) 0%,var(--g3) 60%,var(--g4) 100%);position:relative;overflow:hidden;}
+.ctaw::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='20' cy='20' r='1' fill='white' fill-opacity='0.05'/%3E%3C/svg%3E");}
+.ctai{position:relative;z-index:1;max-width:680px;margin:0 auto;}
+.ctaw h2{font-size:clamp(28px,4vw,46px);font-weight:900;color:white;letter-spacing:-.5px;margin-bottom:16px;}
+.ctaw p{font-size:17px;color:rgba(255,255,255,.85);margin-bottom:40px;line-height:1.7;}
+.cbtns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+.cbtw{background:white;color:var(--g2);padding:13px 22px;border-radius:11px;font-size:15px;font-weight:800;transition:.2s;}
+.cbtw:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.2);}
+
+/* SEO */
+.seow{padding:80px 0;background:var(--bg);}
+.seog{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:8px;}
+.seoc{background:white;border-radius:var(--r);padding:28px;border:1.5px solid var(--border);}
+.seoc h3{font-size:16px;font-weight:800;margin-bottom:12px;padding-bottom:12px;border-bottom:2px solid var(--g7);}
+.seoc p,.seoc li{font-size:13.5px;color:var(--muted);line-height:1.75;}
+.seoc ul{padding-left:18px;margin-top:10px;}
+.seoc li{margin-bottom:6px;}
+
+/* FOOTER */
+footer{background:var(--ink2);padding:60px 48px 32px;}
+.fg{max-width:1120px;margin:0 auto 48px;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;}
+.fbrand{font-size:17px;font-weight:800;color:white;display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.fbico{width:34px;height:34px;background:linear-gradient(135deg,var(--g3),var(--g5));border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;}
+.fdesc{font-size:13px;color:#64748b;line-height:1.7;max-width:270px;}
+.fct{font-size:11px;font-weight:800;color:#64748b;text-transform:uppercase;letter-spacing:1px;margin-bottom:16px;}
+.fl{display:block;font-size:13.5px;color:#64748b;margin-bottom:10px;transition:.15s;}
+.fl:hover{color:white;}
+.fbot{max-width:1120px;margin:0 auto;padding-top:24px;border-top:1px solid #1e293b;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;}
+.fcopy{font-size:13px;color:#475569;}
+.fbadge{font-size:12px;font-weight:700;color:var(--g5);background:rgba(16,185,129,.1);padding:5px 14px;border-radius:100px;border:1px solid rgba(16,185,129,.2);}
+
+@media(max-width:768px){
+  nav{padding:0 20px;}.nlink{display:none;}
+  .hero,.ctaw{padding-left:20px;padding-right:20px;}
+  .sec,.sb,.fw,.hw,.ew,.seow,footer{padding-left:20px;padding-right:20px;}
+  .seog{grid-template-columns:1fr;}
+  .fg{grid-template-columns:1fr 1fr;}
+  .sgrid::before{display:none;}
+  .hstats{gap:20px;}.hsnum{font-size:22px;}
+}
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <a href="/" class="nlogo" aria-label="EtiketEditoru.com Anasayfa">
+    <div class="nmark">🏷️</div>
+    <span class="ntxt">Etiket<em>Editoru</em>.com</span>
+  </a>
+  <a href="#editorler" class="nlink">Editörler</a>
+  <a href="#ozellikler" class="nlink">Özellikler</a>
+  <a href="#nasil-calisir" class="nlink">Nasıl Çalışır?</a>
+  <a href="editor.html" class="ncta">🚀 Hemen Başla</a>
+</nav>
+
+<section class="hero">
+  <div class="hbg"></div>
+  <div class="hgrid"></div>
+  <div class="hcont">
+    <div class="hbadge"><span class="bdot"></span>Türkiye'nin Ücretsiz Etiket Tasarım Platformu</div>
+    <h1>Her Etiketi <span class="hl">Dakikalar</span><br/>İçinde Oluşturun</h1>
+    <p class="hsub">Fiyat, koli, gıda mevzuatı ve TİTCK uyumlu kozmetik etiketi — 4 editör, tek platform. Kurulum yok, kayıt yok, tamamen ücretsiz.</p>
+    <div class="hbtns">
+      <a href="editor.html" class="hbtn hbtn-p">🏷️ Fiyat Etiketi Oluştur</a>
+      <a href="#editorler" class="hbtn hbtn-o">Tüm Editörleri Gör →</a>
+    </div>
+    <div class="hstats">
+      <div><div class="hsnum">4</div><div class="hslbl">Farklı Editör</div></div>
+      <div><div class="hsnum">%100</div><div class="hslbl">Mevzuat Uyumlu</div></div>
+      <div><div class="hsnum">0₺</div><div class="hslbl">Tamamen Ücretsiz</div></div>
+      <div><div class="hsnum">∞</div><div class="hslbl">Sınırsız Kullanım</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="ew" id="editorler">
+  <div class="sec">
+    <div class="shdr anim">
+      <div class="sey">4 Farklı Editör</div>
+      <h2 class="stit">Sektörünüze Özel<br/>Etiket Çözümü</h2>
+      <p class="ssub">Her editör kendi mevzuatına uygun alanlarla gelir. Sürükle-bırak, toplu PDF, logo ve sembol ekleme — hepsi dahil.</p>
+    </div>
+    <div class="egrid">
+      <a href="editor.html" class="ec ec-g anim d1">
+        <div class="eico">🏷️</div>
+        <h3>Fiyat Etiketi Editörü</h3>
+        <p>Market ve mağaza rafları için profesyonel fiyat etiketi. Excel'den toplu ürün yükleme, kilo fiyatı, QR kod ve EAN-13 barkod desteği.</p>
+        <div class="etags"><span class="et">Excel Yükleme</span><span class="et">QR Kod</span><span class="et">EAN-13</span><span class="et etg">Toplu PDF</span><span class="et etg">Logo Ekle</span></div>
+        <span class="ecta">Editörü Aç →</span>
+      </a>
+      <a href="koli-editor.html" class="ec ec-o anim d2">
+        <div class="eico">📦</div>
+        <h3>Koli Etiketi Editörü</h3>
+        <p>Depo ve lojistik için koli etiketi. QR kodda barkod, tarih ve parti no. EAN-128 (Code128) barkod, çoklu ürün yönetimi.</p>
+        <div class="etags"><span class="et">QR Kod</span><span class="et">EAN-128</span><span class="et">Parti No</span><span class="et etg">Toplu Baskı</span><span class="et etg">Logo Ekle</span></div>
+        <span class="ecta">Editörü Aç →</span>
+      </a>
+      <a href="gida-etiketi.html" class="ec ec-b anim d3">
+        <div class="eico">🌿</div>
+        <h3>Gıda Etiketi Editörü</h3>
+        <p>Türk Gıda Kodeksi Etiketleme Yönetmeliği'ne uyumlu. İçindekiler, net miktar, ÜRT/TETT, kayıt no, alerjen bildirimi ve saklama koşulları.</p>
+        <div class="etags"><span class="et">Türk Gıda Kodeksi</span><span class="et">Alerjen</span><span class="et">EAN-13</span><span class="et etg">Mevzuat Uyumlu</span></div>
+        <span class="ecta">Editörü Aç →</span>
+      </a>
+      <a href="kozmetik-etiketi.html" class="ec ec-p anim d4">
+        <div class="eico">💄</div>
+        <h3>Kozmetik Etiketi Editörü</h3>
+        <p>TİTCK Kozmetik Yönetmeliği'ne %100 uyumlu back label. INCI listesi, PAO sembolü, ÜTS referans numarası, geri dönüşüm sembolleri.</p>
+        <div class="etags"><span class="et">TİTCK Uyumlu</span><span class="et">INCI</span><span class="et">PAO</span><span class="et">ÜTS Numarası</span></div>
+        <span class="ecta">Editörü Aç →</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<div class="sb">
+  <div class="si">
+    <div class="si-it anim"><div class="sinum">4</div><div class="silbl">Farklı Editör</div></div>
+    <div class="si-it anim d1"><div class="sinum">%100</div><div class="silbl">Mevzuat Uyumlu</div></div>
+    <div class="si-it anim d2"><div class="sinum">0₺</div><div class="silbl">Abonelik Yok</div></div>
+    <div class="si-it anim d3"><div class="sinum">∞</div><div class="silbl">Ücretsiz Kullanım</div></div>
+  </div>
+</div>
+
+<section class="fw" id="ozellikler">
+  <div class="sec">
+    <div class="shdr anim">
+      <div class="sey">Özellikler</div>
+      <h2 class="stit">Her Şey Dahil,<br/>Kurulum Yok</h2>
+      <p class="ssub">İhtiyacınız olan tüm araçlar tarayıcınızda çalışır. Hesap açma, ödeme gerekmez.</p>
+    </div>
+    <div class="fgrid">
+      <div class="fc anim d1"><div class="femi">🖱️</div><h4>Sürükle &amp; Bırak Tasarım</h4><p>Etiket üzerindeki her alanı sürükleyin. 8 yönlü köşe tutamaçlarıyla boyutlandırın.</p></div>
+      <div class="fc anim d2"><div class="femi">📊</div><h4>Excel ile Toplu Yükleme</h4><p>Yüzlerce ürünü Excel'den tek tıkla yükleyin. Sütunlar otomatik eşleşir.</p></div>
+      <div class="fc anim d3"><div class="femi">🔲</div><h4>QR Kod &amp; Barkod</h4><p>EAN-13, EAN-128, Code39 ve QR kod otomatik oluşturulur, her etikete eklenir.</p></div>
+      <div class="fc anim d1"><div class="femi">🖼️</div><h4>Çoklu Logo &amp; Sembol</h4><p>PNG/JPG/SVG logo ve mevzuat sembollerini (PAO, geri dönüşüm) tıkla-ekle ile yerleştirin.</p></div>
+      <div class="fc anim d2"><div class="femi">📄</div><h4>Toplu PDF &amp; Yazdırma</h4><p>Tüm ürünler için toplu PDF oluşturun, doğrudan yazıcıya gönderin.</p></div>
+      <div class="fc anim d3"><div class="femi">💾</div><h4>Proje Kaydetme</h4><p>.json olarak kaydedin, istediğiniz zaman geri yükleyip düzenleyin.</p></div>
+      <div class="fc anim d1"><div class="femi">📐</div><h4>Özel Boyutlar</h4><p>Hazır ölçüler veya mm cinsinden istediğiniz boyutu girin. Her ambalaja uyar.</p></div>
+      <div class="fc anim d2"><div class="femi">⚖️</div><h4>Mevzuat Uyumlu Alanlar</h4><p>Türk Gıda Kodeksi ve TİTCK zorunlu alanları hazır gelir, tek tek eklemenize gerek yok.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="hw" id="nasil-calisir">
+  <div class="sec">
+    <div class="shdr anim">
+      <div class="sey">Nasıl Çalışır?</div>
+      <h2 class="stit">4 Adımda<br/>Profesyonel Etiket</h2>
+    </div>
+    <div class="sgrid">
+      <div class="sc anim d1"><div class="snum">1</div><h4>Editörü Seç</h4><p>Fiyat, koli, gıda veya kozmetik — sektörünüze uygun editörü açın.</p></div>
+      <div class="sc anim d2"><div class="snum">2</div><h4>Boyutu Ayarla</h4><p>Hazır ölçülerden seçin veya özel mm değeri girin.</p></div>
+      <div class="sc anim d3"><div class="snum">3</div><h4>Bilgileri Gir</h4><p>Ürün bilgilerini doldurun veya Excel'den yükleyin. Canlı önizlemede anında görün.</p></div>
+      <div class="sc anim d4"><div class="snum">4</div><h4>Yazdır / PDF Al</h4><p>Tekli veya toplu PDF çıktısı alın, doğrudan yazıcıya gönderin.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="ctaw">
+  <div class="ctai">
+    <h2>Hemen Etiketi<br/>Oluşturmaya Başlayın</h2>
+    <p>Kayıt yok, kurulum yok, ödeme yok. Tarayıcınızda açın, kullanmaya başlayın.</p>
+    <div class="cbtns">
+      <a href="editor.html" class="cbtw">🏷️ Fiyat Etiketi</a>
+      <a href="koli-editor.html" class="cbtw">📦 Koli Etiketi</a>
+      <a href="gida-etiketi.html" class="cbtw">🌿 Gıda Etiketi</a>
+      <a href="kozmetik-etiketi.html" class="cbtw">💄 Kozmetik Etiketi</a>
+    </div>
+  </div>
+</section>
+
+<section class="seow">
+  <div class="sec">
+    <div class="shdr anim">
+      <div class="sey">Mevzuat Bilgisi</div>
+      <h2 class="stit">Doğru Etiket,<br/>Güvenli Ürün</h2>
+      <p class="ssub">Her sektörün yasal gereklilikleri farklıdır. Editörlerimiz zorunlu alanları hazır getirir.</p>
+    </div>
+    <div class="seog">
+      <div class="seoc anim"><h3>🌿 Gıda Etiketi Zorunlu Bilgiler</h3><p>Türk Gıda Kodeksi Etiketleme Yönetmeliği kapsamında şu bilgiler zorunludur:</p><ul><li>Gıdanın adı ve içindekiler listesi (ağırlıkça azalan sıra)</li><li>Alerjen bildirimi (kalın veya farklı karakterle)</li><li>Net miktar ve son tüketim tarihi (ÜRT/TETT)</li><li>İşletme kayıt/onay numarası ve menşei ülke</li><li>Saklama ve kullanım koşulları</li></ul></div>
+      <div class="seoc anim d1"><h3>💄 Kozmetik Etiketi — TİTCK Gereklilikleri</h3><p>TİTCK Kozmetik Yönetmeliği kapsamında zorunlu bilgiler:</p><ul><li>INCI sistemine göre içerik listesi (ağırlıkça azalan)</li><li>ÜTS (Ürün Takip Sistemi) bildirimi ve referans numarası</li><li>PAO — açıldıktan sonra kullanım süresi (ay sembolü)</li><li>Sorumlu kişi adı, adresi ve menşei ülke</li><li>Pazarlama iddiası kozmetik tanımını aşmamalı</li></ul></div>
+      <div class="seoc anim"><h3>🏷️ Fiyat Etiketi Kullanım Alanları</h3><p>Profesyonel fiyat etiketi editörümüz şu sektörlerde kullanılır:</p><ul><li>Süpermarket, market ve bakkallar</li><li>Manav, kasap ve şarküteri işletmeleri</li><li>Pastane, fırın ve kuruyemiş dükkanları</li><li>Eczane ve kozmetik mağazaları</li><li>Züccaciye, hırdavat ve tekstil işletmeleri</li></ul></div>
+      <div class="seoc anim d1"><h3>📦 Koli Etiketi — Lojistik &amp; Depo</h3><p>Koli etiketi editörü depo yönetimi ve sevkiyat için:</p><ul><li>QR kod içinde barkod, üretim tarihi ve parti numarası</li><li>EAN-128 (Code128) standart barkod desteği</li><li>Çoklu ürün yönetimi ve toplu baskı</li><li>Saklama koşulları ve özel alan ekleme</li><li>Farklı koli boyutları için hazır ölçüler</li></ul></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="fg">
+    <div>
+      <div class="fbrand"><div class="fbico">🏷️</div>EtiketEditoru.com</div>
+      <p class="fdesc">Türkiye'nin fiyat, koli, gıda ve kozmetik etiketi için ücretsiz profesyonel tasarım ve yazdırma platformu.</p>
+    </div>
+    <div>
+      <div class="fct">Editörler</div>
+      <a href="editor.html" class="fl">🏷️ Fiyat Etiketi</a>
+      <a href="koli-editor.html" class="fl">📦 Koli Etiketi</a>
+      <a href="gida-etiketi.html" class="fl">🌿 Gıda Etiketi</a>
+      <a href="kozmetik-etiketi.html" class="fl">💄 Kozmetik Etiketi</a>
+    </div>
+    <div>
+      <div class="fct">Özellikler</div>
+      <a href="#ozellikler" class="fl">Sürükle &amp; Bırak</a>
+      <a href="#ozellikler" class="fl">Excel Yükleme</a>
+      <a href="#ozellikler" class="fl">QR Kod &amp; Barkod</a>
+      <a href="#ozellikler" class="fl">Toplu PDF</a>
+    </div>
+    <div>
+      <div class="fct">Mevzuat</div>
+      <a href="gida-etiketi.html" class="fl">Türk Gıda Kodeksi</a>
+      <a href="kozmetik-etiketi.html" class="fl">TİTCK Kozmetik</a>
+      <a href="kozmetik-etiketi.html" class="fl">INCI Listesi</a>
+      <a href="kozmetik-etiketi.html" class="fl">PAO &amp; ÜTS</a>
+    </div>
+  </div>
+  <div class="fbot">
+    <div class="fcopy">© 2025 EtiketEditoru.com — Tüm editörler ücretsizdir.</div>
+    <div class="fbadge">🟢 Ücretsiz · Tarayıcıda Çalışır · Kurulum Yok</div>
+  </div>
+</footer>
+
+<script>
+const obs = new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('on');});},{threshold:.1});
+document.querySelectorAll('.anim').forEach(el=>obs.observe(el));
+const nav=document.getElementById('nav');
+window.addEventListener('scroll',()=>nav.classList.toggle('scr',scrollY>40));
+document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener('click',e=>{const t=document.querySelector(a.getAttribute('href'));if(t){e.preventDefault();t.scrollIntoView({behavior:'smooth',block:'start'});}});});
+</script>
+</body>
+</html>
